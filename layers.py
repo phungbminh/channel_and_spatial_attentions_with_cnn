@@ -1,5 +1,5 @@
 from tensorflow.keras.layers import (BatchNormalization, ReLU)
-from attentions_module import channel_attention,spatial_attention, sc_conv, bam, scse
+from attentions_module import channel_attention,spatial_attention, sc_conv, bam, scse, CBAM_block
 from tensorflow.keras.layers import Conv2D, Add
 
 
@@ -9,8 +9,7 @@ def attention_block(feature, attention_type='CBAM', ratio=8, sc_params=None):
     As described in https://arxiv.org/abs/1807.06521.
     """
     if attention_type == 'CBAM':
-        feature = channel_attention(feature, ratio)
-        feature = spatial_attention(feature)
+        feature = CBAM_block(feature, 512, reduction_ratio=16, kernel_size=7, name="Conv_Last_CBAM_")
         print('Using CBAM ne')
 
     elif attention_type == 'SCNet':

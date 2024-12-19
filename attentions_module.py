@@ -1,5 +1,6 @@
 from tensorflow.keras.layers import ( AveragePooling2D, GlobalMaxPooling2D, multiply, Permute, Concatenate, Lambda, BatchNormalization, ReLU, Layer)
 from keras import backend as K
+from tensorflow.keras import layers
 
 #CBAM-BLOCK---------------------------------------------
 def channel_attention(input_feature, ratio=8):
@@ -73,6 +74,49 @@ def spatial_attention(input_feature):
     mul = multiply([input_feature, cbam_feature])
 
     return mul
+def CBAM_block(input_layer, filter_num, reduction_ratio=32, kernel_size=7, name=None):
+    """CBAM: Convolutional Block Attention Module Block
+    Args:
+      input_layer: input tensor
+      filter_num: integer, number of neurons in the hidden layers
+      reduction_ratio: integer, default 32, reduction ratio for the number of neurons in the hidden layers
+      kernel_size: integer, default 7, kernel size of the spatial convolution excitation convolution
+      name: string, block label
+    Returns:
+      Output A tensor for the CBAM attention block
+    """
+    axis = -1
+
+    # CHANNEL ATTENTION
+    avg_pool = layers.GlobalAveragePooling2D(name=name + "_Channel_AveragePooling")(input_layer)
+    max_pool = layers.GlobalMaxPooling2D(name=name + "_Channel_MaxPooling")(input_layer)
+
+    # Shared MLP
+    dense1 = layers.Dense(filter_num // reduction_ratio, activation='relu', name=name + "_Channel_FC_1")
+    dense2 = layers.Dense(filter_num, name=name + "_Channel_FC_2")
+
+    avg_out = dense2(dense1(avg_pool))
+    max_out = dense2(dense1(max_pool))
+
+    channel = layers.add([avg_out, max_out])
+    channel = layers.Activation('sigmoid', name=name + "_Channel_Sigmoid")(channel)
+    channel = layers.Reshape((1, 1, filter_num), name=name + "_Channel_Reshape")(channel)
+
+    channel_output = layers.multiply([input_layer, channel])
+
+    # SPATIAL ATTENTION
+    avg_pool2 = layers.Lambda(lambda x: tf.reduce_mean(x, axis=axis, keepdims=True))(input_layer)
+    max_pool2 = layers.Lambda(lambda x: tf.reduce_max(x, axis=axis, keepdims=True))(input_layer)
+
+    spatial = layers.concatenate([avg_pool2, max_pool2], axis=axis)
+
+    # K = 7 achieves the highest accuracy
+    spatial = layers.Conv2D(1, kernel_size=kernel_size, padding='same', name=name + "_Spatial_Conv2D")(spatial)
+    spatial_out = layers.Activation('sigmoid', name=name + "_Spatial_Sigmoid")(spatial)
+
+    CBAM_out = layers.multiply([channel_output, spatial_out])
+
+    return CBAM_out
 #SCNET-BLOCK---------------------------------------------
 class ResizeLayer(Layer):
     def call(self, inputs):
