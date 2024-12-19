@@ -28,11 +28,11 @@ def main():
     current_time = current_time.replace("-", "_")
     current_time = current_time.replace(":", "_")
     current_time = current_time.replace("+", "_")
-    experiments_dir = os.path.abspath(f"./working/experiment_{current_time}")
+
     parser = argparse.ArgumentParser()
 
     # Arguments users used when running command lines
-    parser.add_argument('--result-dir', type=str, default=experiments_dir, metavar='RESULT_DIR', help='')
+    parser.add_argument('--result-dir', type=str, default="./working", metavar='RESULT_DIR', help='')
     parser.add_argument('--train-folder', default='/kaggle/input/fer2013/train', type=str,
                         help='Where training data is located')
     parser.add_argument('--valid-folder', default='/kaggle/input/fer2013/test', type=str,
@@ -64,6 +64,7 @@ def main():
 
     args = parser.parse_args()
     print(args)
+    experiments_dir = args.result_dir + '/' + current_time
     if args.use_wandb == 1:
         wandb.login(key=args.wandb_api_key)
         # Initialize WandB with the configuration from the parsed arguments
@@ -153,7 +154,7 @@ def main():
         callbacks.append(cb_wandb)
 
     # logger
-    log_path = args.result_dir
+    log_path = experiments_dir
     if not os.path.exists(log_path):
         # Nếu chưa tồn tại, tạo thư mục
         os.makedirs(args.result_dir)
