@@ -1,0 +1,7 @@
+tensorflow
+keras
+argparse
+pickle5
+pandas
+matplotlib
+wandb
