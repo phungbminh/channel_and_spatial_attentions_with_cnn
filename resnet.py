@@ -157,7 +157,7 @@ def main():
     log_path = experiments_dir
     if not os.path.exists(log_path):
         # Nếu chưa tồn tại, tạo thư mục
-        os.makedirs(args.log_path)
+        os.makedirs(log_path)
     cb_log = CSVLogger(log_path + '/log.csv')
     callbacks.append(cb_log)
 
