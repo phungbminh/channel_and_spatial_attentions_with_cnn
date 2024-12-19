@@ -47,7 +47,7 @@ def main():
     parser.add_argument('--epochs', default=120, type=int, help='Number of epochs')
     parser.add_argument('--image-channels', default=3, type=int, help='Number channel of input image')
     parser.add_argument('--class-mode', default='sparse', type=str, help='Class mode to compile')
-    parser.add_argument('--model-path', default='best_model.h5.keras', type=str, help='Path to save trained model')
+    parser.add_argument('--model-path', default=current_time + '.h5.keras', type=str, help='Path to save trained model')
     parser.add_argument('--class-names-path', default='class_names.pkl', type=str, help='Path to save class names')
     parser.add_argument('--early-stopping', default=50, type=str, help='early stopping for avoiding overfit')
     parser.add_argument('--d-steps', default=32, type=int, help='step per epochs')
