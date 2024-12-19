@@ -40,7 +40,7 @@ def main():
     parser.add_argument('--model', default='resnet50', type=str, help='Type of model')
     parser.add_argument('--num-classes', default=7, type=int, help='Number of classes')
     parser.add_argument("--batch-size", default=32, type=int)
-    parser.add_argument('--image-size', default=48, type=int, help='Size of input image')
+    parser.add_argument('--image-size', default=224, type=int, help='Size of input image')
     parser.add_argument('--optimizer', default='adamax', type=str, help='Types of optimizers')
     parser.add_argument('--lr-scheduler', default='ExponentialDecay', type=str, help='Types of scheduler')
     parser.add_argument('--lr', default=0.001, type=float, help='Learning rate')
@@ -58,7 +58,7 @@ def main():
                         help='name project to store data in wantdb')
     # parser.add_argument('--use-CBAM', default=1, type=int, help='1 is use-CBAM, 0 is not use')
     # parser.add_argument('--use-CBAM-after-stage', default=0, type=int, help='1 is use-CBAM after state not block')
-    parser.add_argument('--attention_type', default='CBAM', type=str, help='CBAM, SCNet, BAM, scSE')
+    parser.add_argument('--attention-type', default='CBAM', type=str, help='CBAM, SCNet, BAM, scSE')
 
     #args, unknown = parser.parse_known_args()
 
@@ -101,15 +101,15 @@ def main():
 
     # Create model, chuan bi mo hinh train
     if args.model == 'resnet18':
-        model = resnet18(num_classes=classes)
+        model = resnet18(input_shape=(args.image_size, args.image_size, args.image_channels), num_classes=classes, attention_type=args.attention_type)
     elif args.model == 'resnet34':
-        model = resnet34(num_classes=classes)
+        model = resnet34(input_shape=(args.image_size, args.image_size, args.image_channels), num_classes=classes, attention_type=args.attention_type)
     elif args.model == 'resnet50':
-        model = resnet50(num_classes=classes)
+        model = resnet50(input_shape=(args.image_size, args.image_size, args.image_channels), num_classes=classes, attention_type=args.attention_type)
     elif args.model == 'resnet101':
-        model = resnet101(num_classes=classes)
+        model = resnet101(input_shape=(args.image_size, args.image_size, args.image_channels), num_classes=classes, attention_type=args.attention_type)
     elif args.model == 'resnet152':
-        model = resnet152(num_classes=classes)
+        model = resnet152(input_shape=(args.image_size, args.image_size, args.image_channels), num_classes=classes, attention_type=args.attention_type)
     else:
         print('Wrong resnet name, please choose one of these model: resnet18, resnet34, resnet50, resnet101, resnet152')
 
