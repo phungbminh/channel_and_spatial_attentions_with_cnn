@@ -1,0 +1,48 @@
+/kaggle/input/rafdb-basic/rafdb_basic/train
+/kaggle/input/rafdb-basic/rafdb_basic/test
+224
+Found 12271 images belonging to 7 classes.
+Found 3068 images belonging to 7 classes.
+stage 1:
+conv2_block1_3_bn
+Using BAM ne
+conv2_block2_3_bn
+Using BAM ne
+conv2_block3_3_bn
+Using BAM ne
+
+stage 2:
+conv3_block1_3_bn
+Using BAM ne
+conv3_block2_3_bn
+Using BAM ne
+conv3_block3_3_bn
+Using BAM ne
+conv3_block4_3_bn
+Using BAM ne
+
+stage 3:
+conv4_block1_3_bn
+Using BAM ne
+conv4_block2_3_bn
+Using BAM ne
+conv4_block3_3_bn
+Using BAM ne
+conv4_block4_3_bn
+Using BAM ne
+conv4_block5_3_bn
+Using BAM ne
+conv4_block6_3_bn
+Using BAM ne
+
+stage 4:
+conv5_block1_3_bn
+Using BAM ne
+conv5_block2_3_bn
+Using BAM ne
+conv5_block3_3_bn
+Using BAM ne
+/usr/local/lib/python3.10/dist-packages/keras/src/trainers/data_adapters/py_dataset_adapter.py:121: UserWarning: Your `PyDataset` class should call `super().__init__(**kwargs)` in its constructor. `**kwargs` can include `workers`, `use_multiprocessing`, `max_queue_size`. Do not pass these arguments to `fit()`, as they will be ignored.
+  self._warn_if_super_not_called()
+
+[1m 72/384[0m [32m━━━[0m[37m━━━━━━━━━━━━━━━━━[0m [1m2:22[0m 458ms/step - accuracy: 0.3301 - loss: 2.9722
