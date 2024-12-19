@@ -9,7 +9,8 @@ def attention_block(feature, attention_type='CBAM', ratio=8, sc_params=None):
     As described in https://arxiv.org/abs/1807.06521.
     """
     if attention_type == 'CBAM':
-        feature = CBAM_block(feature, 512, reduction_ratio=16, kernel_size=7, name="Conv_Last_CBAM_")
+        feature = channel_attention(feature, ratio)
+        feature = spatial_attention(feature)
         print('Using CBAM ne')
 
     elif attention_type == 'SCNet':
