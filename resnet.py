@@ -32,7 +32,7 @@ def main():
     parser = argparse.ArgumentParser()
 
     # Arguments users used when running command lines
-    parser.add_argument('--result-dir', type=str, default="./working", metavar='RESULT_DIR', help='')
+    parser.add_argument('--result-path', type=str, default="./working", metavar='RESULT_DIR', help='')
     parser.add_argument('--train-folder', default='/kaggle/input/fer2013/train', type=str,
                         help='Where training data is located')
     parser.add_argument('--valid-folder', default='/kaggle/input/fer2013/test', type=str,
@@ -64,7 +64,7 @@ def main():
 
     args = parser.parse_args()
     print(args)
-    experiments_dir = args.result_dir + '/' + current_time
+    experiments_dir = args.result_path + '/' + current_time
     if args.use_wandb == 1:
         wandb.login(key=args.wandb_api_key)
         # Initialize WandB with the configuration from the parsed arguments
@@ -157,7 +157,7 @@ def main():
     log_path = experiments_dir
     if not os.path.exists(log_path):
         # Nếu chưa tồn tại, tạo thư mục
-        os.makedirs(args.result_dir)
+        os.makedirs(args.log_path)
     cb_log = CSVLogger(log_path + '/log.csv')
     callbacks.append(cb_log)
 
