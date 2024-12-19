@@ -1,7 +1,7 @@
 tensorflow
 keras
 argparse
-pickle5
+pickle4
 pandas
 matplotlib
 wandb

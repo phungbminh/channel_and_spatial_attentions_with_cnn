@@ -1,3 +1,6 @@
+from tensorflow.keras.layers import (MaxPooling2D, BatchNormalization, ReLU, GlobalAveragePooling2D)
+from layers import stage
+
 # def build(input_shape,num_classes,layers,use_bottleneck=False,use_CBAM=False,use_CBAM_after_stage=False):
 def build(input_shape, num_classes, layers, use_bottleneck=False, attention_type=None):
     '''A complete `stage` of ResNet
@@ -163,10 +166,10 @@ def vgg16(img_height=48,
     if attention == "":
         x = x
     else:
-        if attention == "SEnet":
-            attention_output = squeeze_excitation_block(x, 512, 16.0, name="Conv_Last_SNE_")
-        if attention == "ECANet":
-            attention_output = ECA_Net_block(x, adaptive=True, name="Conv_Last_ECANet_")
+        # if attention == "SEnet":
+        #     attention_output = squeeze_excitation_block(x, 512, 16.0, name="Conv_Last_SNE_")
+        # if attention == "ECANet":
+        #     attention_output = ECA_Net_block(x, adaptive=True, name="Conv_Last_ECANet_")
         if attention == "CBAM":
             attention_output = CBAM_block(x, 512, reduction_ratio=16, kernel_size=7, name="Conv_Last_CBAM_")
 

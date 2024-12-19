@@ -1,3 +1,8 @@
+from tensorflow.keras.layers import (BatchNormalization, ReLU)
+from attentions_module import channel_attention,spatial_attention, sc_conv, bam, scse
+from tensorflow.keras.layers import Conv2D, Add
+
+
 # def cbam_block(cbam_feature, ratio=8):
 def attention_block(feature, attention_type='CBAM', ratio=8, sc_params=None):
     """Contains the implementation of Convolutional Block Attention Module(CBAM) block.

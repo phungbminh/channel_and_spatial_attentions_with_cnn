@@ -1,9 +1,7 @@
-from tensorflow.keras.layers import (Input, Conv2D,BatchNormalization, AveragePooling2D, MaxPooling2D, Activation, Dropout, Flatten, Dense, ReLU, GlobalAveragePooling2D, GlobalMaxPooling2D, Add, Reshape, Dense, multiply, Permute, Concatenate, Conv2D, Activation, Lambda)
+from tensorflow.keras.layers import ( AveragePooling2D, GlobalMaxPooling2D, multiply, Permute, Concatenate, Lambda, BatchNormalization, ReLU, Layer)
 from keras import backend as K
-from tensorflow.keras.layers import GlobalAveragePooling2D, Dense, BatchNormalization, ReLU, Conv2D, Multiply, Add, Activation, Reshape
 
 #CBAM-BLOCK---------------------------------------------
-
 def channel_attention(input_feature, ratio=8):
     channel_axis = 1 if K.image_data_format() == "channels_first" else -1
     channel = input_feature.shape[channel_axis]
