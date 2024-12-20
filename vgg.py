@@ -59,6 +59,7 @@ def main():
     # parser.add_argument('--use-CBAM', default=1, type=int, help='1 is use-CBAM, 0 is not use')
     # parser.add_argument('--use-CBAM-after-stage', default=0, type=int, help='1 is use-CBAM after state not block')
     parser.add_argument('--attention_option', default='CBAM', type=str, help='CBAM, SCNet, BAM, scSE')
+    parser.add_argument('--color-mode', default='grayscale', type=str, help='Color mode')
 
     #args, unknown = parser.parse_known_args()
 
@@ -92,9 +93,9 @@ def main():
     img_size = args.image_size
     print(img_size)
     train_generator = training_datagen.flow_from_directory(TRAINING_DIR, target_size=(img_size, img_size),
-                                                           batch_size=args.batch_size, class_mode=class_mode)
+                                                           batch_size=args.batch_size, class_mode=class_mode,color_mode=args.color_mode)
     val_generator = val_datagen.flow_from_directory(TEST_DIR, target_size=(img_size, img_size),
-                                                    batch_size=args.batch_size, class_mode=class_mode)
+                                                    batch_size=args.batch_size, class_mode=class_mode, color_mode=args.color_mode)
     # Luu Tru lai chi muc nhan
     class_names = list(train_generator.class_indices.keys())
     with open(args.class_names_path, 'wb') as fp:
