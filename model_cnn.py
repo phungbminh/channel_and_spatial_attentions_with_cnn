@@ -10,6 +10,7 @@ def build_cnn_model(model_type,input_shape, num_classes, layers, use_bottleneck=
     '''
 
     input = Input(input_shape, name='input')
+    print(input)
     #input = Input(shape=(img_height, img_width, 1), name="img")
     # conv1
     if model_type == 'RESNET':
@@ -74,7 +75,7 @@ def build_cnn_model(model_type,input_shape, num_classes, layers, use_bottleneck=
 
 def resnet50(input_shape=(48,48,3),num_classes=1000, attention_type='CBAM'):
     return build_cnn_model('RESNET',input_shape,num_classes,[3,4,6,3],use_bottleneck=True, attention_type=attention_type)
-def vgg16(input_shape=(48,48,3), num_classes=1000, attention_type='CBAM'):
+def vgg16(input_shape=(48,48,1), num_classes=1000, attention_type='CBAM'):
     return build_cnn_model('VGG',input_shape,num_classes,None,None, attention_type=attention_type)
 
 # def resnet101(input_shape=(224,224,3),num_classes=1000, attention_type='CBAM'):
