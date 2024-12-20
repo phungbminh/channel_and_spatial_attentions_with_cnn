@@ -206,11 +206,11 @@ def vgg_conv_block(input, block_idx, filter, attention_type):
             print('Using CBAM ne')
             attention_output = channel_attention(x, ratio=16)
             attention_output = spatial_attention(attention_output)
-            x = layers.Add(name='ConvLast_Add1')([attention_output, x])
+            x = layers.Add(name='Conv_Last_Add' + str(block_idx))([attention_output, x])
         if attention_type == "BAM":
             print('Using BAM ne')
             attention_output = bam(x, reduction_ratio=16, num_layers=1, dilation_conv_num=2, dilation_val=4)
-            x = layers.Add(name='ConvLast_Add1')([attention_output, x])
+            x = layers.Add(name='Conv_Last_Add' + str(block_idx))([attention_output, x])
         if attention_type == 'scSE':
             print('Using scSE ne')
             x = scse(x, reduction_ratio=8)
