@@ -104,7 +104,7 @@ def main():
 
     model = vgg16(input_shape=(args.image_size, args.image_size, args.image_channels), num_classes=classes, attention_type=args.attention_option)
     model.build(input_shape=(None, args.image_size, args.image_size, args.image_channels))
-    model.summary()
+    print(model.summary())
 
     learning_rate = 0.0001
 
