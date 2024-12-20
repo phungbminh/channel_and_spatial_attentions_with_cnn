@@ -194,15 +194,12 @@ def stage(input, filter_num, num_block, use_downsample=True, use_bottleneck=Fals
     return net
 
 def vgg_conv_block(input, block_idx, filter, attention_type):
-    print('Conv: '+  str())
+    print('Conv: '+  str(block_idx) + ' filter: ' + filter)
     x = input
     x = Conv2D(filters=filter, kernel_size=3, padding='same', activation='elu', name="Conv" + str(block_idx) + ".1")(x)
     x = Conv2D(filters=filter, kernel_size=3, padding='same', activation='elu', name="Conv" + str(block_idx) + ".2")(x)
-    if block_idx == 1 :
-        x = MaxPool2D(pool_size=2, strides=2, padding='same', name="MaxPool2D_1")(x)
-    elif block_idx > 1 :
-        x = Conv2D(filters=filter, kernel_size=3, padding='same', activation='elu', name="Conv" + str(block_idx) +".3")(x)
-        x = MaxPool2D(pool_size=2, strides=2, padding='same', name="MaxPool2D_3")(x)
+    x = Conv2D(filters=filter, kernel_size=3, padding='same', activation='elu', name="Conv" + str(block_idx) +".3")(x)
+    x = MaxPool2D(pool_size=2, strides=2, padding='same', name="MaxPool2D_3")(x)
     if block_idx == 5 :
         if attention_type == "CBAM":
             print('Using CBAM ne')

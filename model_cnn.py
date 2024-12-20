@@ -30,6 +30,7 @@ def build_cnn_model(model_type,input_shape, num_classes, layers, use_bottleneck=
         filters = [64, 128, 256, 512]
         for i in range(len(filters)):
             print(f'stage {i + 1}:')
+
             net = stage(input=net,
                         filter_num=filters[i],
                         num_block=layers[i],
@@ -45,10 +46,16 @@ def build_cnn_model(model_type,input_shape, num_classes, layers, use_bottleneck=
         output = Dense(num_classes, activation='softmax', name='predictions')(net)
 
     elif model_type == 'VGG':
-        filters = [64, 128, 256, 512, 512]
+
+        net = Conv2D(filters=64, kernel_size=3, padding='same', activation='elu',
+                   name="Conv1.1")(input)
+        net = Conv2D(filters=64, kernel_size=3, padding='same', activation='elu',
+                   name="Conv1.2")(net)
+        net = MaxPool2D(pool_size=2, strides=2, padding='same', name="MaxPool2D_1")(net)
+        filters = [128, 256, 512, 512]
         for i in range(len(filters)):
-            net = vgg_conv_block(input=input,
-                                 block_idx=(i + 1),
+            net = vgg_conv_block(input=net,
+                                 block_idx=(i + 2),
                                  filter=filters[i],
                                  attention_type=attention_type)
         net = Flatten()(net)
