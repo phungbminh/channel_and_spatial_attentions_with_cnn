@@ -1,7 +1,7 @@
 from tensorflow.keras.layers import (BatchNormalization, ReLU)
 from attentions_module import channel_attention,spatial_attention, sc_conv, bam, scse, CBAM_block
-from tensorflow.keras.layers import Conv2D, Add
-
+from tensorflow.keras.layers import Conv2D, Add,MaxPool2D
+from tensorflow.keras import layers
 
 # def cbam_block(cbam_feature, ratio=8):
 def attention_block(feature, attention_type='CBAM', ratio=8, sc_params=None):
@@ -192,3 +192,31 @@ def stage(input, filter_num, num_block, use_downsample=True, use_bottleneck=Fals
                        attention_type=attention_type)
 
     return net
+
+def vgg_conv_block(input, block_idx, filter, attention_type):
+    print('Conv: '+  str())
+    x = input
+    if (block_idx == 1):
+        x = Conv2D(filters=filter, kernel_size=3, padding='same', activation='elu', name="Conv" + str(block_idx) +".1")(x)
+        x = Conv2D(filters=filter, kernel_size=3, padding='same', activation='elu', name="Conv" + str(block_idx) +".2")(x)
+        x = MaxPool2D(pool_size=2, strides=2, padding='same', name="MaxPool2D_1")(x)
+    elif(block_idx > 1):
+        x = Conv2D(filters=filter, kernel_size=3, padding='same', activation='elu', name="Conv" + str(block_idx) +".1")(x)
+        x = Conv2D(filters=filter, kernel_size=3, padding='same', activation='elu', name="Conv" + str(block_idx) +".2")(x)
+        x = Conv2D(filters=filter, kernel_size=3, padding='same', activation='elu', name="Conv" + str(block_idx) +".3")(x)
+        x = MaxPool2D(pool_size=2, strides=2, padding='same', name="MaxPool2D_3")(x)
+
+    if attention_type == "CBAM":
+        print('Using CBAM ne')
+        attention_output = channel_attention(x, ratio=16)
+        attention_output = spatial_attention(attention_output)
+        x = layers.Add(name='ConvLast_Add1')([attention_output, x])
+    if attention_type == "BAM":
+        print('Using BAM ne')
+        attention_output = bam(x, reduction_ratio=16, num_layers=1, dilation_conv_num=2, dilation_val=4)
+        x = layers.Add(name='ConvLast_Add1')([attention_output, x])
+    if attention_type == 'scSE':
+        print('Using scSE ne')
+        x = scse(x, reduction_ratio=8)
+
+    return x

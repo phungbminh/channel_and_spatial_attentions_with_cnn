@@ -1,0 +1,14 @@
+name: myenv
+channels:
+  - defaults
+dependencies:
+  - python=3.9
+  - tensorflow
+  - keras
+  - pandas
+  - matplotlib
+  - pip
+  - pip:
+    - argparse
+    - pickle4
+    - wandb

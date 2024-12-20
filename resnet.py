@@ -10,7 +10,7 @@ import wandb
 from wandb.integration.keras import WandbMetricsLogger
 import os, sys, argparse, pytz, json
 from datetime import datetime
-from model_cnn import resnet18, resnet34, resnet50, resnet101, resnet152
+from model_cnn import resnet50
 def main():
 
     root_dir = "kaggle/working"
@@ -100,22 +100,10 @@ def main():
     with open(args.class_names_path, 'wb') as fp:
         pickle.dump(class_names, fp)
 
-    # Create model, chuan bi mo hinh train
-    if args.model == 'resnet18':
-        model = resnet18(input_shape=(args.image_size, args.image_size, args.image_channels), num_classes=classes, attention_type=args.attention_option)
-    elif args.model == 'resnet34':
-        model = resnet34(input_shape=(args.image_size, args.image_size, args.image_channels), num_classes=classes, attention_type=args.attention_option)
-    elif args.model == 'resnet50':
-        model = resnet50(input_shape=(args.image_size, args.image_size, args.image_channels), num_classes=classes, attention_type=args.attention_option)
-    elif args.model == 'resnet101':
-        model = resnet101(input_shape=(args.image_size, args.image_size, args.image_channels), num_classes=classes, attention_type=args.attention_option)
-    elif args.model == 'resnet152':
-        model = resnet152(input_shape=(args.image_size, args.image_size, args.image_channels), num_classes=classes, attention_type=args.attention_option)
-    else:
-        print('Wrong resnet name, please choose one of these model: resnet18, resnet34, resnet50, resnet101, resnet152')
 
+    model = resnet50(input_shape=(args.image_size, args.image_size, args.image_channels), num_classes=classes, attention_type=args.attention_option)
     model.build(input_shape=(None, args.image_size, args.image_size, args.image_channels))
-    # model.summary()
+    model.summary()
 
     # chon learning rate scheduler
     lr_schedule = args.lr
