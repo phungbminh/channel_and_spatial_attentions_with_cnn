@@ -1,0 +1,58 @@
+{
+  "os":  "Linux-6.6.56+-x86_64-with-glibc2.35",
+  "python":  "CPython 3.10.12",
+  "startedAt":  "2024-12-20T03:25:52.362909Z",
+  "args":  [
+    "--train-folder",
+    "/kaggle/input/fer-2013/train",
+    "--valid-folder",
+    "/kaggle/input/fer-2013/test",
+    "--epochs",
+    "1",
+    "--wandb-project-name",
+    "Resnet50_BAM_FER",
+    "--image-size",
+    "48",
+    "--attention_option",
+    "BAM",
+    "--result-path",
+    "/kaggle/working/channel_and_spatial_attentions_with_cnn/working/experiment"
+  ],
+  "program":  "/kaggle/working/channel_and_spatial_attentions_with_cnn/resnet.py",
+  "codePath":  "resnet.py",
+  "git":  {
+    "remote":  "git@github.com:phungbminh/channel_and_spatial_attentions_with_cnn.git",
+    "commit":  "d8c70c03cc0b3c7dd5e8a5b9ea83e95b75e8af9e"
+  },
+  "email":  "khmt.23.colab@gmail.com",
+  "root":  "/kaggle/working/channel_and_spatial_attentions_with_cnn",
+  "host":  "3f51a2e0080e",
+  "executable":  "/usr/bin/python3",
+  "codePathLocal":  "resnet.py",
+  "cpu_count":  2,
+  "cpu_count_logical":  4,
+  "gpu":  "Tesla P100-PCIE-16GB",
+  "gpu_count":  1,
+  "disk":  {
+    "/":  {
+      "total":  "8656922775552",
+      "used":  "6482870296576"
+    }
+  },
+  "memory":  {
+    "total":  "33662353408"
+  },
+  "cpu":  {
+    "count":  2,
+    "countLogical":  4
+  },
+  "gpu_nvidia":  [
+    {
+      "name":  "Tesla P100-PCIE-16GB",
+      "memoryTotal":  "17179869184",
+      "cudaCores":  3584,
+      "architecture":  "Pascal"
+    }
+  ],
+  "cudaVersion":  "12.6"
+}
