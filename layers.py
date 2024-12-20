@@ -198,8 +198,9 @@ def vgg_conv_block(input, block_idx, filter, attention_type):
     x = input
     x = Conv2D(filters=filter, kernel_size=3, padding='same', activation='elu', name="Conv" + str(block_idx) + ".1")(x)
     x = Conv2D(filters=filter, kernel_size=3, padding='same', activation='elu', name="Conv" + str(block_idx) + ".2")(x)
-    x = Conv2D(filters=filter, kernel_size=3, padding='same', activation='elu', name="Conv" + str(block_idx) +".3")(x)
-    x = MaxPool2D(pool_size=2, strides=2, padding='same', name="MaxPool2D_3")(x)
+    if block_idx > 2 :
+        x = Conv2D(filters=filter, kernel_size=3, padding='same', activation='elu', name="Conv" + str(block_idx) +".3")(x)
+    x = MaxPool2D(pool_size=2, strides=2, padding='same', name="MaxPool2D_" + str(block_idx))(x)
     if block_idx == 5 :
         if attention_type == "CBAM":
             print('Using CBAM ne')
