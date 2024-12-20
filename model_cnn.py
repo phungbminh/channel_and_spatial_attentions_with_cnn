@@ -60,7 +60,7 @@ def build_cnn_model(model_type,input_shape, num_classes, layers, use_bottleneck=
                                  attention_type=attention_type)
         net = Flatten()(net)
         net = Dense(units=4096, activation='elu', name="Dense1")(net)
-        net = Dense(units=4096, activation='inputinput', name="Dense2")(net)
+        net = Dense(units=4096, activation='elu', name="Dense2")(net)
 
         output = Dense(units=num_classes, activation='softmax', name="DenseFinal")(net)
     model = Model(input, output)
