@@ -58,7 +58,7 @@ def bam_block(inputs, filter_num, reduction_ratio=16, num_layers=1, dilation_val
     num_squeeze = input_channel // reduction_ratio
 
     # Channel attention
-    gap = tf.reduce_mean(inputs, axis=[1, 2], keepdims=True)  # Global Average Pooling
+    gap = GlobalAveragePooling2D()(inputs)
     channel = Dense(num_squeeze, activation=None,name=name + "_Channel_FC_1")(gap)
     channel = Dense(input_channel, activation=None,name=name + "_Channel_FC_2")(channel)
     channel = BatchNormalization()(channel)
