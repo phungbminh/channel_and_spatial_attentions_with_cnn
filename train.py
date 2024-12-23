@@ -10,9 +10,11 @@ import wandb
 from wandb.integration.keras import WandbMetricsLogger
 import os, sys, argparse, pytz, json
 from datetime import datetime
-from model_cnn import resnet50
-def main():
+from model_cnn import resnet50,vgg16
+from tensorflow.keras import layers, Model
 
+
+def main():
     root_dir = "kaggle/working"
 
     current_time = datetime.now()
@@ -33,34 +35,29 @@ def main():
 
     # Arguments users used when running command lines
     parser.add_argument('--result-path', type=str, default="./working", metavar='RESULT_DIR', help='')
-    parser.add_argument('--train-folder', default='/kaggle/input/fer2013/train', type=str,
-                        help='Where training data is located')
-    parser.add_argument('--valid-folder', default='/kaggle/input/fer2013/test', type=str,
-                        help='Where validation data is located')
-    parser.add_argument('--model', default='resnet50', type=str, help='Type of model')
+    parser.add_argument('--train-folder', default='/kaggle/input/fer2013/train', type=str,  help='Where training data is located')
+    parser.add_argument('--valid-folder', default='/kaggle/input/fer2013/test', type=str,  help='Where validation data is located')
+    parser.add_argument('--model', default='vgg16', type=str, help='Type of model')
     parser.add_argument('--num-classes', default=7, type=int, help='Number of classes')
     parser.add_argument("--batch-size", default=32, type=int)
-    parser.add_argument('--image-size', default=224, type=int, help='Size of input image')
+    parser.add_argument('--image-size', default=48, type=int, help='Size of input image')
     parser.add_argument('--optimizer', default='adamax', type=str, help='Types of optimizers')
     parser.add_argument('--lr-scheduler', default='ExponentialDecay', type=str, help='Types of scheduler')
-    parser.add_argument('--lr', default=0.001, type=float, help='Learning rate')
+    parser.add_argument('--lr', default=0.0001, type=float, help='Learning rate')
     parser.add_argument('--epochs', default=120, type=int, help='Number of epochs')
-    parser.add_argument('--image-channels', default=3, type=int, help='Number channel of input image')
+    parser.add_argument('--image-channels', default=1, type=int, help='Number channel of input image')
     parser.add_argument('--class-mode', default='sparse', type=str, help='Class mode to compile')
     parser.add_argument('--model-path', default=current_time + '.h5.keras', type=str, help='Path to save trained model')
     parser.add_argument('--class-names-path', default='class_names.pkl', type=str, help='Path to save class names')
     parser.add_argument('--early-stopping', default=50, type=str, help='early stopping for avoiding overfit')
     parser.add_argument('--d-steps', default=32, type=int, help='step per epochs')
     parser.add_argument('--use-wandb', default=1, type=int, help='Use wandb')
-    parser.add_argument('--wandb-api-key', default='cfa48af5b389548142fc1fcc1ab79cbcfe7fc07b', type=str,
-                        help='wantdb api key')
-    parser.add_argument('--wandb-project-name', default='Resnet50_BAM_v2', type=str,
-                        help='name project to store data in wantdb')
-    # parser.add_argument('--use-CBAM', default=1, type=int, help='1 is use-CBAM, 0 is not use')
-    # parser.add_argument('--use-CBAM-after-stage', default=0, type=int, help='1 is use-CBAM after state not block')
+    parser.add_argument('--wandb-api-key', default='cfa48af5b389548142fc1fcc1ab79cbcfe7fc07b', type=str, help='wantdb api key')
+    parser.add_argument('--wandb-project-name', default='Resnet50_BAM_v2', type=str,help='name project to store data in wantdb')
     parser.add_argument('--attention_option', default='CBAM', type=str, help='CBAM, SCNet, BAM, scSE')
+    parser.add_argument('--color-mode', default='grayscale', type=str, help='Color mode')
 
-    #args, unknown = parser.parse_known_args()
+    # args, unknown = parser.parse_known_args()
 
     args = parser.parse_args()
     print(args)
@@ -91,29 +88,30 @@ def main():
 
     img_size = args.image_size
     print(img_size)
-    train_generator = training_datagen.flow_from_directory(TRAINING_DIR, target_size=(img_size, img_size),
-                                                           batch_size=args.batch_size, class_mode=class_mode)
-    val_generator = val_datagen.flow_from_directory(TEST_DIR, target_size=(img_size, img_size),
-                                                    batch_size=args.batch_size, class_mode=class_mode)
+    train_generator = training_datagen.flow_from_directory(TRAINING_DIR, target_size=(img_size, img_size), batch_size=args.batch_size, class_mode=class_mode, color_mode=args.color_mode)
+    val_generator = val_datagen.flow_from_directory(TEST_DIR, target_size=(img_size, img_size), batch_size=args.batch_size, class_mode=class_mode,color_mode=args.color_mode)
     # Luu Tru lai chi muc nhan
     class_names = list(train_generator.class_indices.keys())
     with open(args.class_names_path, 'wb') as fp:
         pickle.dump(class_names, fp)
 
-
-    model = resnet50(input_shape=(args.image_size, args.image_size, args.image_channels), num_classes=classes, attention_type=args.attention_option)
+    model = Model()
+    if args.model == 'resnet50':
+        model = resnet50(input_shape=(args.image_size, args.image_size, args.image_channels), num_classes=classes,attention_type=args.attention_option)
+    if args.model == 'vgg16':
+        model = vgg16(input_shape=(args.image_size, args.image_size, args.image_channels), num_classes=classes,attention_type=args.attention_option)
     model.build(input_shape=(None, args.image_size, args.image_size, args.image_channels))
     model.summary()
 
     # chon learning rate scheduler
     lr_schedule = args.lr
     if args.lr_scheduler == 'ExponentialDecay':
-        lr_schedule = keras.optimizers.schedules.ExponentialDecay(
+        lr_schedule = tf.keras.optimizers.schedules.ExponentialDecay(
             initial_learning_rate=args.lr,
             decay_steps=10000,
             decay_rate=0.9)
     elif args.lr_scheduler == 'CosineDecay':
-        lr_schedule = keras.optimizers.schedules.CosineDecay(
+        lr_schedule = tf.keras.optimizers.schedules.CosineDecay(
             initial_learning_rate=args.lr,
             decay_steps=5,
             alpha=0.0,
@@ -168,7 +166,7 @@ def main():
 
     model.fit(
         train_generator,
-        epochs = args.epochs,
+        epochs=args.epochs,
         verbose=1,
         validation_data=val_generator,
         callbacks=callbacks,
@@ -176,6 +174,7 @@ def main():
     # 🐝 Close your wandb run
     if args.use_wandb == 1:
         wandb.finish()
+
 
 if __name__ == "__main__":
     main()
