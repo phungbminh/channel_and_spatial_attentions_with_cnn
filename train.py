@@ -164,16 +164,23 @@ def main():
                                  save_best_only=True)
     callbacks.append(best_model)
 
-    model.fit(
+    history = model.fit(
         train_generator,
         epochs=args.epochs,
         verbose=1,
         validation_data=val_generator,
         callbacks=callbacks,
     )
+
+    best_val_accuracy = max(history.history['val_accuracy'])
+    best_val_loss = min(history.history['val_loss'])
+
+    print(f"Best Validation Accuracy: {best_val_accuracy:.4f}")
+    print(f"Best Validation Loss: {best_val_loss:.4f}")
     # 🐝 Close your wandb run
     if args.use_wandb == 1:
         wandb.finish()
+
 
 
 if __name__ == "__main__":
