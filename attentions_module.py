@@ -15,8 +15,11 @@ def cbam_block(input_layer, filter_num, reduction_ratio=16, kernel_size=7, name=
     Returns:
       Output A tensor for the CBAM attention block
     """
-    input_channel = input_layer.get_shape().as_list()[-1]
+    input_channel = input_layer.shape[-1]
     num_squeeze = input_channel // reduction_ratio
+    print(num_squeeze)
+    test = filter_num // reduction_ratio
+    print(test)
     axis = -1
 
     # CHANNEL ATTENTION
@@ -49,10 +52,10 @@ def cbam_block(input_layer, filter_num, reduction_ratio=16, kernel_size=7, name=
 
 
 #BAM-BLOCK---------------------------------------------
-def bam_block(inputs, reduction_ratio=16, num_layers=1, dilation_val=4, name=None):
+def bam_block(inputs, filter_num, reduction_ratio=16, num_layers=1, dilation_val=4, name=None):
 
-    input_channel = inputs.get_shape().as_list()[-1]
-    num_squeeze = input_channel // reduction_ratio
+    input_channel = inputs.shape[-1]
+    num_squeeze = filter_num // reduction_ratio
 
     # Channel attention
     gap = tf.reduce_mean(inputs, axis=[1, 2], keepdims=True)  # Global Average Pooling
