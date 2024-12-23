@@ -107,7 +107,21 @@ def main():
     model.build(input_shape=(None, args.image_size, args.image_size, args.image_channels))
     print(model.summary())
 
-    learning_rate = 0.0001
+    # chon learning rate scheduler
+    lr_schedule = args.lr
+    if args.lr_scheduler == 'ExponentialDecay':
+        lr_schedule = tf.keras.optimizers.schedules.ExponentialDecay(
+            initial_learning_rate=args.lr,
+            decay_steps=10000,
+            decay_rate=0.9)
+    elif args.lr_scheduler == 'CosineDecay':
+        lr_schedule = tf.keras.optimizers.schedules.CosineDecay(
+            initial_learning_rate=args.lr,
+            decay_steps=5,
+            alpha=0.0,
+            name="CosineDecay",
+            warmup_target=None,
+            warmup_steps=0)
 
     callbacks = []
     # wandb
@@ -126,7 +140,7 @@ def main():
     # early stopping
     callbacks.append(tf.keras.callbacks.EarlyStopping(monitor='loss', patience=args.early_stopping))
 
-    model.compile(optimizer=Adam(learning_rate=learning_rate),
+    model.compile(optimizer=Adam(learning_rate=lr_schedule),
                   loss=SparseCategoricalCrossentropy(),
                   metrics=['accuracy'])
     # Luu lai he so weight
