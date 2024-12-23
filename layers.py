@@ -11,11 +11,11 @@ def select_attention(feature, filter_num, attention_type='CBAM', ratio=16, layer
         print('Using CBAM ne')
     elif attention_type == 'BAM':
         print('Using BAM ne')
-        feature = bam_block(feature, reduction_ratio=ratio, num_layers=1, dilation_val=4, name=layer_name + "_BAM_")
+        feature = bam_block(feature, filter_num, reduction_ratio=ratio, num_layers=1, dilation_val=4, name=layer_name + "_BAM_")
 
     elif attention_type == 'scSE':
         print('Using scSE')
-        feature = scse_block(feature, reduction_ratio=ratio, name=layer_name + "_scSE_")
+        feature = scse_block(feature, filter_num, reduction_ratio=ratio, name=layer_name + "_scSE_")
     return feature
 
 

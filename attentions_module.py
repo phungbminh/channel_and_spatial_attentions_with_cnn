@@ -55,7 +55,7 @@ def cbam_block(input_layer, filter_num, reduction_ratio=16, kernel_size=7, name=
 def bam_block(inputs, filter_num, reduction_ratio=16, num_layers=1, dilation_val=4, name=None):
 
     input_channel = inputs.shape[-1]
-    num_squeeze = filter_num // reduction_ratio
+    num_squeeze = input_channel // reduction_ratio
 
     # Channel attention
     gap = tf.reduce_mean(inputs, axis=[1, 2], keepdims=True)  # Global Average Pooling
@@ -80,7 +80,7 @@ def bam_block(inputs, filter_num, reduction_ratio=16, num_layers=1, dilation_val
     return output
 
 
-def scse_block(inputs, reduction_ratio=16, name=None):
+def scse_block(inputs, filter_num, reduction_ratio=16, name=None):
     """Squeeze-and-Excitation Block with Spatial Attention."""
     #Squeeze-and-Excitation Layer
     # Global Average Pooling
