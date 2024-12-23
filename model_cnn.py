@@ -1,7 +1,7 @@
 
 import tensorflow as tf
 from tensorflow.keras import layers, Model
-from tensorflow.keras.layers import (Activation, ZeroPadding2D,Input, Conv2D, MaxPool2D, Flatten, Dense, MaxPooling2D, BatchNormalization, ReLU, GlobalAveragePooling2D)
+from tensorflow.keras.layers import (Dropout, Activation, ZeroPadding2D,Input, Conv2D, MaxPool2D, Flatten, Dense, MaxPooling2D, BatchNormalization, ReLU, GlobalAveragePooling2D)
 from layers import stage, vgg_conv_block
 
 
@@ -43,7 +43,9 @@ def vgg16(input_shape=(48,48,1), num_classes=1000, attention_type='CBAM'):
                              activation = activation)
     net = Flatten()(net)
     net = Dense(units=4096, activation=activation, name="Dense1")(net)
+    net = Dropout(0.5)(net)
     net = Dense(units=4096, activation=activation, name="Dense2")(net)
+    net = Dropout(0.5)(net)
 
     output = Dense(units=num_classes, activation='softmax', name="DenseFinal")(net)
 
