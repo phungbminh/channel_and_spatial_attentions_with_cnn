@@ -54,7 +54,7 @@ def main():
     parser.add_argument('--use-wandb', default=1, type=int, help='Use wandb')
     parser.add_argument('--wandb-api-key', default='cfa48af5b389548142fc1fcc1ab79cbcfe7fc07b', type=str, help='wantdb api key')
     parser.add_argument('--wandb-project-name', default='Resnet50_BAM_v2', type=str,help='name project to store data in wantdb')
-    parser.add_argument('--attention_option', default='CBAM', type=str, help='CBAM, SCNet, BAM, scSE')
+    parser.add_argument('--attention_option', default='None', type=str, help='CBAM, BAM, scSE')
     parser.add_argument('--color-mode', default='grayscale', type=str, help='Color mode')
 
     # args, unknown = parser.parse_known_args()
