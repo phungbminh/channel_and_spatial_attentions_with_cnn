@@ -10,7 +10,7 @@ import wandb
 from wandb.integration.keras import WandbMetricsLogger
 import os, sys, argparse, pytz, json
 from datetime import datetime
-from model_cnn import resnet50,vgg16
+from model_cnn import resnet50,vgg16, resnet18
 from tensorflow.keras import layers, Model
 
 
@@ -98,6 +98,10 @@ def main():
     model = Model()
     if args.model == 'resnet50':
         model = resnet50(input_shape=(args.image_size, args.image_size, args.image_channels), num_classes=classes,attention_type=args.attention_option)
+
+    if args.model == 'resnet18':
+        model = resnet18(input_shape=(args.image_size, args.image_size, args.image_channels), num_classes=classes,
+                      attention_type=args.attention_option)
     if args.model == 'vgg16':
         model = vgg16(input_shape=(args.image_size, args.image_size, args.image_channels), num_classes=classes,attention_type=args.attention_option)
     model.build(input_shape=(None, args.image_size, args.image_size, args.image_channels))
