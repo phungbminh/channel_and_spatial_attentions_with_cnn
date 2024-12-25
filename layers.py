@@ -94,6 +94,11 @@ def stage(input, filter_num, num_block, stage_idx=-1, attention_type=None, conv_
     net = residual_block(input=input, filter_num=filter_num, stride=2 ,stage_idx=stage_idx, block_idx=1, attention_type=attention_type, conv_shortcut=True)
     for i in range(1, num_block):
         net = residual_block(input=net, filter_num=filter_num, stride=1,stage_idx=stage_idx, block_idx=i + 1, attention_type=attention_type, conv_shortcut=False)
+    #Config attention after Stage
+    if attention_type is not None:
+        net = select_attention(net, filter_num=filter_num, attention_type=attention_type, layer_name='Conv{}_Attention_'.format(stage_idx))
+    else:
+        net = net
     return net
 
 def vgg_conv_block(input, block_idx, filter, attention_type, activation='elu'):

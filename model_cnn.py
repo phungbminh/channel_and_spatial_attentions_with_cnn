@@ -27,10 +27,6 @@ def resnet50(input_shape=(48, 48, 3), num_classes=1000, attention_type='CBAM'):
         print(f'Conv {i + 1}:')
         net = stage(input=net, filter_num=filters[i], num_block=layers[i],
                     stage_idx=i + 2, attention_type=attention_type)
-        if attention_type is not None:
-            net = select_attention(net, filter_num=filters[i], attention_type=attention_type, layer_name='Conv{}_block{}_Attention_'.format(i + 2, layers[i]))
-        else:
-            net = net
     net = GlobalAveragePooling2D(name='avg_pool')(net)
     output = Dense(num_classes, activation='softmax', name='predictions')(net)
     model = Model(input, output)
