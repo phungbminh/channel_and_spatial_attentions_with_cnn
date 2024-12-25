@@ -17,14 +17,14 @@ def resnet50(input_shape=(48, 48, 3), num_classes=1000, attention_type='CBAM'):
     net = ZeroPadding2D(padding=((1, 1), (1, 1)), name='MaxPool2D_1_Pad')(net)
     net = MaxPooling2D(3, strides=2, name='MaxPool2D_1')(net)
 
-    if attention_type is not None:
-        net = select_attention(net, filter_num=64, attention_type=attention_type, layer_name='Conv1_block1_Attention_')
-    else:
-        net = net
+    # if attention_type is not None:
+    #     net = select_attention(net, filter_num=64, attention_type=attention_type, layer_name='Conv1_block1_Attention_')
+    # else:
+    #     net = net
     # conv2_x, conv3_x, conv4_x, conv5_x
     filters = [64, 128, 256, 512]
     for i in range(len(filters)):
-        print(f'stage {i + 1}:')
+        print(f'Conv {i + 1}:')
         net = stage(input=net, filter_num=filters[i], num_block=layers[i],
                     stage_idx=i + 2, attention_type=attention_type)
     net = GlobalAveragePooling2D(name='avg_pool')(net)
