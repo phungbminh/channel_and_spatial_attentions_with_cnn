@@ -21,19 +21,19 @@ def cbam_block(input_layer, filter_num, reduction_ratio=16, kernel_size=7, name=
     axis = -1
 
     # CHANNEL ATTENTION
-    avg_pool = layers.GlobalAveragePooling2D(name=name + "_Channel_AveragePooling")(input_layer)
-    max_pool = layers.GlobalMaxPooling2D(name=name + "_Channel_MaxPooling")(input_layer)
+    avg_pool = layers.GlobalAveragePooling2D(name=name + "_Channel_AveragePooling_{}".format(input_channel))(input_layer)
+    max_pool = layers.GlobalMaxPooling2D(name=name + "_Channel_MaxPooling_{}".format(input_channel))(input_layer)
 
     # Shared MLP
-    dense1 = layers.Dense(num_squeeze, activation='relu', name=name + "_Channel_FC_1")
-    dense2 = layers.Dense(input_channel, name=name + "_Channel_FC_2")
+    dense1 = layers.Dense(num_squeeze, activation='relu', name=name + "_Channel_FC_1_{}".format(input_channel))
+    dense2 = layers.Dense(input_channel, name=name + "_Channel_FC_2_{}".format(input_channel))
 
     avg_out = dense2(dense1(avg_pool))
     max_out = dense2(dense1(max_pool))
 
     channel = layers.add([avg_out, max_out])
-    channel = layers.Activation('sigmoid', name=name + "_Channel_Sigmoid")(channel)
-    channel = layers.Reshape((1, 1, input_channel), name=name + "_Channel_Reshape")(channel)
+    channel = layers.Activation('sigmoid', name=name + "_Channel_Sigmoid_{}".format(input_channel))(channel)
+    channel = layers.Reshape((1, 1, input_channel), name=name + "_Channel_Reshape_{}".format(input_channel))(channel)
 
     channel_output = layers.multiply([input_layer, channel])
 
@@ -43,8 +43,8 @@ def cbam_block(input_layer, filter_num, reduction_ratio=16, kernel_size=7, name=
 
     spatial = layers.concatenate([avg_pool2, max_pool2], axis=axis)
 
-    spatial = layers.Conv2D(1, kernel_size=kernel_size, padding='same', name=name + "_Spatial_Conv2D")(spatial)
-    spatial_out = layers.Activation('sigmoid', name=name + "_Spatial_Sigmoid")(spatial)
+    spatial = layers.Conv2D(1, kernel_size=kernel_size, padding='same', name=name + "_Spatial_Conv2D_{}".format(input_channel))(spatial)
+    spatial_out = layers.Activation('sigmoid', name=name + "_Spatial_Sigmoid_{}".format(input_channel))(spatial)
 
     return layers.multiply([channel_output, spatial_out])
 

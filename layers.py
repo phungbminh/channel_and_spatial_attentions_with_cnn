@@ -55,10 +55,10 @@ def bottleneck_block(input, filter_num, stride=1, stage_idx=-1, block_idx=-1, at
                    name='conv{}_block{}_3_conv'.format(stage_idx, block_idx))(relu2)
 
     bn3 = BatchNormalization(name='conv{}_block{}_3_bn'.format(stage_idx, block_idx))(conv3)
-    if attention_type is not None:
-        bn3 = select_attention(bn3, filter_num=filter_num, attention_type=attention_type, layer_name='Conv1_block1_Attention_')
-    else:
-        bn3 = bn3
+    # if attention_type is not None:
+    #     bn3 = select_attention(bn3, filter_num=filter_num, attention_type=attention_type, layer_name='Conv1_block1_Attention_')
+    # else:
+    #     bn3 = bn3
     return bn3
 
 
@@ -82,10 +82,10 @@ def residual_block(input, filter_num, stride=1, stage_idx=-1, block_idx=-1, atte
         shortcut = input
     residual = bottleneck_block(input, filter_num, stride, stage_idx, block_idx, attention_type=attention_type)
     output = Add(name='conv{}_block{}_add_Shortcut'.format(stage_idx, block_idx))([shortcut, residual])
-    if attention_type is not None:
-        output = select_attention(output, filter_num=64, attention_type=attention_type, layer_name='Conv{}_block{}_Attention_'.format(stage_idx, block_idx))
-    else:
-        output = output
+    # if attention_type is not None:
+    #     output = select_attention(output, filter_num=filter_num, attention_type=attention_type, layer_name='Conv{}_block{}_Att_'.format(stage_idx, block_idx))
+    # else:
+    #     output = output
     output = ReLU(name='conv{}_block{}_relu_output'.format(stage_idx, block_idx))(output)
     return output
 
