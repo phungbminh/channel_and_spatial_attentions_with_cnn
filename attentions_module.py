@@ -17,9 +17,7 @@ def cbam_block(input_layer, filter_num, reduction_ratio=16, kernel_size=7, name=
     """
     input_channel = input_layer.shape[-1]
     num_squeeze = input_channel // reduction_ratio
-    print(num_squeeze)
-    test = filter_num // reduction_ratio
-    print(test)
+
     axis = -1
 
     # CHANNEL ATTENTION
@@ -27,15 +25,15 @@ def cbam_block(input_layer, filter_num, reduction_ratio=16, kernel_size=7, name=
     max_pool = layers.GlobalMaxPooling2D(name=name + "_Channel_MaxPooling")(input_layer)
 
     # Shared MLP
-    dense1 = layers.Dense(filter_num // reduction_ratio, activation='relu', name=name + "_Channel_FC_1")
-    dense2 = layers.Dense(filter_num, name=name + "_Channel_FC_2")
+    dense1 = layers.Dense(num_squeeze, activation='relu', name=name + "_Channel_FC_1")
+    dense2 = layers.Dense(input_channel, name=name + "_Channel_FC_2")
 
     avg_out = dense2(dense1(avg_pool))
     max_out = dense2(dense1(max_pool))
 
     channel = layers.add([avg_out, max_out])
     channel = layers.Activation('sigmoid', name=name + "_Channel_Sigmoid")(channel)
-    channel = layers.Reshape((1, 1, filter_num), name=name + "_Channel_Reshape")(channel)
+    channel = layers.Reshape((1, 1, input_channel), name=name + "_Channel_Reshape")(channel)
 
     channel_output = layers.multiply([input_layer, channel])
 

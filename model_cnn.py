@@ -2,7 +2,7 @@
 import tensorflow as tf
 from tensorflow.keras import layers, Model
 from tensorflow.keras.layers import (Dropout, Activation, ZeroPadding2D,Input, Conv2D, MaxPool2D, Flatten, Dense, MaxPooling2D, BatchNormalization, ReLU, GlobalAveragePooling2D)
-from layers import stage, vgg_conv_block
+from layers import stage, vgg_conv_block, select_attention
 
 
 def resnet50(input_shape=(48, 48, 3), num_classes=1000, attention_type='CBAM'):
@@ -16,6 +16,11 @@ def resnet50(input_shape=(48, 48, 3), num_classes=1000, attention_type='CBAM'):
 
     net = ZeroPadding2D(padding=((1, 1), (1, 1)), name='MaxPool2D_1_Pad')(net)
     net = MaxPooling2D(3, strides=2, name='MaxPool2D_1')(net)
+
+    if attention_type is not None:
+        net = select_attention(net, filter_num=64, attention_type=attention_type, layer_name='Conv1_block1_Attention_')
+    else:
+        net = net
     # conv2_x, conv3_x, conv4_x, conv5_x
     filters = [64, 128, 256, 512]
     for i in range(len(filters)):
@@ -34,6 +39,11 @@ def vgg16(input_shape=(48,48,1), num_classes=1000, attention_type='CBAM'):
     net = Conv2D(filters=64, kernel_size=3, padding='same', activation=activation, name="Conv1.1")(input)
     net = Conv2D(filters=64, kernel_size=3, padding='same', activation=activation, name="Conv1.2")(net)
     net = MaxPool2D(pool_size=2, strides=2, padding='same', name="MaxPool2D_1")(net)
+
+    if attention_type is not None:
+        net = select_attention(net, filter_num=64, attention_type=attention_type, layer_name='Conv1_block1_Attention_')
+    else:
+        net = net
     filters = [128, 256, 512, 512]
     for i in range(len(filters)):
         net = vgg_conv_block(input=net,

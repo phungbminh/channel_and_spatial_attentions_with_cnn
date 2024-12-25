@@ -7,12 +7,10 @@ from tensorflow.keras import layers
 def select_attention(feature, filter_num, attention_type='CBAM', ratio=16, layer_name=None):
     if attention_type == 'CBAM':
         feature = cbam_block(feature, filter_num, reduction_ratio=ratio, name=layer_name + "_CBAM_")
-        # feature = spatial_attention(feature)
         print('Using CBAM ne')
     elif attention_type == 'BAM':
         print('Using BAM ne')
         feature = bam_block(feature, filter_num, reduction_ratio=ratio, num_layers=1, dilation_val=4, name=layer_name + "_BAM_")
-
     elif attention_type == 'scSE':
         print('Using scSE')
         feature = scse_block(feature, filter_num, reduction_ratio=ratio, name=layer_name + "_scSE_")
@@ -57,10 +55,7 @@ def bottleneck_block(input, filter_num, stride=1, stage_idx=-1, block_idx=-1, at
                    name='conv{}_block{}_3_conv'.format(stage_idx, block_idx))(relu2)
 
     bn3 = BatchNormalization(name='conv{}_block{}_3_bn'.format(stage_idx, block_idx))(conv3)
-    if attention_type is not None:
-        bn3 = select_attention(bn3, filter_num=filter_num, attention_type=attention_type, layer_name='Conv{}_block{}_Attention_'.format(stage_idx, block_idx))
-    else:
-        bn3 = bn3
+
     return bn3
 
 
@@ -83,8 +78,8 @@ def residual_block(input, filter_num, stride=1, stage_idx=-1, block_idx=-1, atte
     else:
         shortcut = input
     residual = bottleneck_block(input, filter_num, stride, stage_idx, block_idx, attention_type=attention_type)
-    output = Add(name='conv{}_block{}_add'.format(stage_idx, block_idx))([shortcut, residual])
-    output = ReLU(name='conv{}_block{}_relu'.format(stage_idx, block_idx))(output)
+    output = Add(name='conv{}_block{}_add_Shortcut'.format(stage_idx, block_idx))([shortcut, residual])
+    output = ReLU(name='conv{}_block{}_relu_output'.format(stage_idx, block_idx))(output)
     return output
 
 # def stage(input, filter_num, num_block, use_downsample=True, use_bottleneck=False,stage_idx=-1, use_CBAM=False, use_CBAM_after_stage=False):
