@@ -97,7 +97,7 @@ def vgg_conv_block(input, block_idx, filter, attention_type, activation='elu'):
     if block_idx > 2:
         x = Conv2D(filters=filter, kernel_size=3, padding='same', activation=activation, name=f"Conv{block_idx}.3")(x)
     x = MaxPool2D(pool_size=2, strides=2, padding='same', name=f"MaxPool2D_{block_idx}")(x)
-    if block_idx == 5:
-        attention_output = select_attention(x, filter_num=filter, attention_type=attention_type, layer_name='Conv_Attention_')
-        x = layers.Add(name='Conv_Last_Add' + str(block_idx))([attention_output, x])
+    # if block_idx == 5:
+    #     attention_output = select_attention(x, filter_num=filter, attention_type=attention_type, layer_name='Conv_Attention_')
+    #     x = layers.Add(name='Conv_Last_Add' + str(block_idx))([attention_output, x])
     return x
