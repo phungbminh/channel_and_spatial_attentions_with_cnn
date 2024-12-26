@@ -71,7 +71,7 @@ def bam_block(inputs, filter_num, reduction_ratio=16, num_layers=1, dilation_val
     spatial = Conv2D(1, kernel_size=1, padding='same', name=name + "_Spatial_Conv2D_4")(spatial)
     spatial = BatchNormalization()(spatial)
 
-    combined = Add(name='combined_layer')([channel, spatial])
+    combined = Add(name=name + '_Combined_Layer')([channel, spatial])
     combined = Activation('sigmoid', name=name + "_Combined_Sigmoid")(combined)
 
     output = Add(name='Attention_BAM_output_layer')([inputs, inputs * combined])
