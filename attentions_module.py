@@ -74,7 +74,7 @@ def bam_block(inputs, filter_num, reduction_ratio=16, num_layers=1, dilation_val
     combined = Add(name=name + '_Combined_Layer')([channel, spatial])
     combined = Activation('sigmoid', name=name + "_Combined_Sigmoid")(combined)
 
-    output = Add(name='Attention_BAM_output_layer')([inputs, inputs * combined])
+    output = Add(name=name + 'Attention_BAM_output_layer')([inputs, inputs * combined])
 
     return output
 
