@@ -10,7 +10,8 @@ import wandb
 from wandb.integration.keras import WandbMetricsLogger
 import os, sys, argparse, pytz, json
 from datetime import datetime
-from model_cnn import resnet50,vgg16
+from model_cnn import resnet50,vgg16, resnet18
+from cnn_models_v2 import model_ResNet_V1
 from tensorflow.keras import layers, Model
 
 
@@ -54,7 +55,7 @@ def main():
     parser.add_argument('--use-wandb', default=1, type=int, help='Use wandb')
     parser.add_argument('--wandb-api-key', default='cfa48af5b389548142fc1fcc1ab79cbcfe7fc07b', type=str, help='wantdb api key')
     parser.add_argument('--wandb-project-name', default='Resnet50_BAM_v2', type=str,help='name project to store data in wantdb')
-    parser.add_argument('--attention_option', default='CBAM', type=str, help='CBAM, SCNet, BAM, scSE')
+    parser.add_argument('--attention_option', default='None', type=str, help='CBAM, BAM, scSE')
     parser.add_argument('--color-mode', default='grayscale', type=str, help='Color mode')
 
     # args, unknown = parser.parse_known_args()
@@ -98,6 +99,13 @@ def main():
     model = Model()
     if args.model == 'resnet50':
         model = resnet50(input_shape=(args.image_size, args.image_size, args.image_channels), num_classes=classes,attention_type=args.attention_option)
+
+    if args.model == 'resnet18':
+        # model = resnet18(input_shape=(args.image_size, args.image_size, args.image_channels), num_classes=classes,
+        #               attention_type=args.attention_option)
+
+        model = model_ResNet_V1(model="ResNet18", img_height=args.image_size, img_width=args.image_size, attention=args.attention_option,
+                                pooling="avg", input_channel=args.image_channels)
     if args.model == 'vgg16':
         model = vgg16(input_shape=(args.image_size, args.image_size, args.image_channels), num_classes=classes,attention_type=args.attention_option)
     model.build(input_shape=(None, args.image_size, args.image_size, args.image_channels))
@@ -164,16 +172,23 @@ def main():
                                  save_best_only=True)
     callbacks.append(best_model)
 
-    model.fit(
+    history = model.fit(
         train_generator,
         epochs=args.epochs,
         verbose=1,
         validation_data=val_generator,
         callbacks=callbacks,
     )
+
+    best_val_accuracy = max(history.history['val_accuracy'])
+    best_val_loss = min(history.history['val_loss'])
+
+    print(f"Best Validation Accuracy: {best_val_accuracy:.4f}")
+    print(f"Best Validation Loss: {best_val_loss:.4f}")
     # 🐝 Close your wandb run
     if args.use_wandb == 1:
         wandb.finish()
+
 
 
 if __name__ == "__main__":
