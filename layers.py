@@ -7,12 +7,10 @@ from tensorflow.keras import layers
 def select_attention(feature, filter_num, attention_type='CBAM', ratio=16, layer_name=None):
     if attention_type == 'CBAM':
         feature = cbam_block(feature, filter_num, reduction_ratio=ratio, name=layer_name + "_CBAM_")
-        # feature = spatial_attention(feature)
         print('Using CBAM ne')
     elif attention_type == 'BAM':
         print('Using BAM ne')
         feature = bam_block(feature, filter_num, reduction_ratio=ratio, num_layers=1, dilation_val=4, name=layer_name + "_BAM_")
-
     elif attention_type == 'scSE':
         print('Using scSE')
         feature = scse_block(feature, filter_num, reduction_ratio=ratio, name=layer_name + "_scSE_")
@@ -57,10 +55,10 @@ def bottleneck_block(input, filter_num, stride=1, stage_idx=-1, block_idx=-1, at
                    name='conv{}_block{}_3_conv'.format(stage_idx, block_idx))(relu2)
 
     bn3 = BatchNormalization(name='conv{}_block{}_3_bn'.format(stage_idx, block_idx))(conv3)
-    if attention_type is not None:
-        bn3 = select_attention(bn3, filter_num=filter_num, attention_type=attention_type, layer_name='Conv{}_block{}_Attention_'.format(stage_idx, block_idx))
-    else:
-        bn3 = bn3
+    # if attention_type is not None:
+    #     bn3 = select_attention(bn3, filter_num=filter_num, attention_type=attention_type, layer_name='Conv1_block1_Attention_')
+    # else:
+    #     bn3 = bn3
     return bn3
 
 
@@ -83,8 +81,8 @@ def residual_block(input, filter_num, stride=1, stage_idx=-1, block_idx=-1, atte
     else:
         shortcut = input
     residual = bottleneck_block(input, filter_num, stride, stage_idx, block_idx, attention_type=attention_type)
-    output = Add(name='conv{}_block{}_add'.format(stage_idx, block_idx))([shortcut, residual])
-    output = ReLU(name='conv{}_block{}_relu'.format(stage_idx, block_idx))(output)
+    output = Add(name='conv{}_block{}_add_Shortcut'.format(stage_idx, block_idx))([shortcut, residual])
+    output = ReLU(name='conv{}_block{}_relu_output'.format(stage_idx, block_idx))(output)
     return output
 
 # def stage(input, filter_num, num_block, use_downsample=True, use_bottleneck=False,stage_idx=-1, use_CBAM=False, use_CBAM_after_stage=False):
@@ -92,6 +90,11 @@ def stage(input, filter_num, num_block, stage_idx=-1, attention_type=None, conv_
     net = residual_block(input=input, filter_num=filter_num, stride=2 ,stage_idx=stage_idx, block_idx=1, attention_type=attention_type, conv_shortcut=True)
     for i in range(1, num_block):
         net = residual_block(input=net, filter_num=filter_num, stride=1,stage_idx=stage_idx, block_idx=i + 1, attention_type=attention_type, conv_shortcut=False)
+    #Config attention after Stage
+    if attention_type is not None:
+        net = select_attention(net, filter_num=filter_num, attention_type=attention_type, layer_name='Conv{}_Attention_'.format(stage_idx))
+    else:
+        net = net
     return net
 
 def vgg_conv_block(input, block_idx, filter, attention_type, activation='elu'):
@@ -102,7 +105,7 @@ def vgg_conv_block(input, block_idx, filter, attention_type, activation='elu'):
     if block_idx > 2:
         x = Conv2D(filters=filter, kernel_size=3, padding='same', activation=activation, name=f"Conv{block_idx}.3")(x)
     x = MaxPool2D(pool_size=2, strides=2, padding='same', name=f"MaxPool2D_{block_idx}")(x)
-    if block_idx == 5:
-        attention_output = select_attention(x, filter_num=filter, attention_type=attention_type, layer_name='Conv_Attention_')
-        x = layers.Add(name='Conv_Last_Add' + str(block_idx))([attention_output, x])
+    # if block_idx == 5:
+    #     attention_output = select_attention(x, filter_num=filter, attention_type=attention_type, layer_name='Conv_Attention_')
+    #     x = layers.Add(name='Conv_Last_Add' + str(block_idx))([attention_output, x])
     return x

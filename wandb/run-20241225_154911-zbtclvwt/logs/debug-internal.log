@@ -1,0 +1,17 @@
+{"time":"2024-12-25T15:49:11.094962034Z","level":"INFO","msg":"using version","core version":"0.19.1"}
+{"time":"2024-12-25T15:49:11.094987914Z","level":"INFO","msg":"created symlink","path":"/kaggle/working/channel_and_spatial_attentions_with_cnn/wandb/run-20241225_154911-zbtclvwt/logs/debug-core.log"}
+{"time":"2024-12-25T15:49:11.201531099Z","level":"INFO","msg":"created new stream","id":"zbtclvwt"}
+{"time":"2024-12-25T15:49:11.201579542Z","level":"INFO","msg":"stream: started","id":"zbtclvwt"}
+{"time":"2024-12-25T15:49:11.201641828Z","level":"INFO","msg":"handler: started","stream_id":"zbtclvwt"}
+{"time":"2024-12-25T15:49:11.202589274Z","level":"INFO","msg":"sender: started","stream_id":"zbtclvwt"}
+{"time":"2024-12-25T15:49:11.202599896Z","level":"INFO","msg":"writer: Do: started","stream_id":"zbtclvwt"}
+{"time":"2024-12-25T15:49:11.440778367Z","level":"INFO","msg":"Starting system monitor"}
+{"time":"2024-12-25T15:53:39.974576489Z","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2024-12-25T15:53:39.97526157Z","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2024-12-25T15:53:40.9751789Z","level":"INFO","msg":"handler: operation stats","stats":{"operations":[{"desc":"uploading output.log","runtime_seconds":0.50894492,"progress":"55.6KB/55.6KB"},{"desc":"uploading config.yaml","runtime_seconds":0.508932734,"progress":"1.9KB/1.9KB"}],"total_operations":2}}
+{"time":"2024-12-25T15:53:41.215708718Z","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2024-12-25T15:53:42.383602979Z","level":"INFO","msg":"stream: closing","id":"zbtclvwt"}
+{"time":"2024-12-25T15:53:42.383651465Z","level":"INFO","msg":"handler: closed","stream_id":"zbtclvwt"}
+{"time":"2024-12-25T15:53:42.383666285Z","level":"INFO","msg":"writer: Close: closed","stream_id":"zbtclvwt"}
+{"time":"2024-12-25T15:53:42.383680091Z","level":"INFO","msg":"sender: closed","stream_id":"zbtclvwt"}
+{"time":"2024-12-25T15:53:42.383756217Z","level":"INFO","msg":"stream: closed","id":"zbtclvwt"}

@@ -1,0 +1,17 @@
+{"time":"2024-12-25T03:27:07.865454398Z","level":"INFO","msg":"using version","core version":"0.19.1"}
+{"time":"2024-12-25T03:27:07.865474835Z","level":"INFO","msg":"created symlink","path":"/kaggle/working/channel_and_spatial_attentions_with_cnn/wandb/run-20241225_032707-usenk8oj/logs/debug-core.log"}
+{"time":"2024-12-25T03:27:07.970043381Z","level":"INFO","msg":"created new stream","id":"usenk8oj"}
+{"time":"2024-12-25T03:27:07.970074524Z","level":"INFO","msg":"stream: started","id":"usenk8oj"}
+{"time":"2024-12-25T03:27:07.970209069Z","level":"INFO","msg":"handler: started","stream_id":"usenk8oj"}
+{"time":"2024-12-25T03:27:07.971272527Z","level":"INFO","msg":"sender: started","stream_id":"usenk8oj"}
+{"time":"2024-12-25T03:27:07.971280091Z","level":"INFO","msg":"writer: Do: started","stream_id":"usenk8oj"}
+{"time":"2024-12-25T03:27:08.191618987Z","level":"INFO","msg":"Starting system monitor"}
+{"time":"2024-12-25T08:16:35.956636931Z","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2024-12-25T08:16:35.957439697Z","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2024-12-25T08:16:36.927615792Z","level":"INFO","msg":"handler: operation stats","stats":{"operations":[{"desc":"uploading config.yaml","runtime_seconds":0.487488194,"progress":"1.9KB/1.9KB"},{"desc":"uploading output.log","runtime_seconds":0.487475279,"progress":"166.1KB/166.1KB"}],"total_operations":2}}
+{"time":"2024-12-25T08:16:37.401154692Z","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2024-12-25T08:16:38.584470513Z","level":"INFO","msg":"stream: closing","id":"usenk8oj"}
+{"time":"2024-12-25T08:16:38.584501417Z","level":"INFO","msg":"handler: closed","stream_id":"usenk8oj"}
+{"time":"2024-12-25T08:16:38.58451648Z","level":"INFO","msg":"writer: Close: closed","stream_id":"usenk8oj"}
+{"time":"2024-12-25T08:16:38.58453208Z","level":"INFO","msg":"sender: closed","stream_id":"usenk8oj"}
+{"time":"2024-12-25T08:16:38.584603858Z","level":"INFO","msg":"stream: closed","id":"usenk8oj"}

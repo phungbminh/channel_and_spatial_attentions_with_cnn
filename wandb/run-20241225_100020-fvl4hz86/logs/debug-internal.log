@@ -1,0 +1,17 @@
+{"time":"2024-12-25T10:00:20.399185278Z","level":"INFO","msg":"using version","core version":"0.19.1"}
+{"time":"2024-12-25T10:00:20.39920625Z","level":"INFO","msg":"created symlink","path":"/kaggle/working/channel_and_spatial_attentions_with_cnn/wandb/run-20241225_100020-fvl4hz86/logs/debug-core.log"}
+{"time":"2024-12-25T10:00:20.504145082Z","level":"INFO","msg":"created new stream","id":"fvl4hz86"}
+{"time":"2024-12-25T10:00:20.504186654Z","level":"INFO","msg":"stream: started","id":"fvl4hz86"}
+{"time":"2024-12-25T10:00:20.504268701Z","level":"INFO","msg":"handler: started","stream_id":"fvl4hz86"}
+{"time":"2024-12-25T10:00:20.505154395Z","level":"INFO","msg":"writer: Do: started","stream_id":"fvl4hz86"}
+{"time":"2024-12-25T10:00:20.505166004Z","level":"INFO","msg":"sender: started","stream_id":"fvl4hz86"}
+{"time":"2024-12-25T10:00:20.786341896Z","level":"INFO","msg":"Starting system monitor"}
+{"time":"2024-12-25T10:05:07.924814859Z","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2024-12-25T10:05:07.925430065Z","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2024-12-25T10:05:08.925404415Z","level":"INFO","msg":"handler: operation stats","stats":{"operations":[{"desc":"uploading config.yaml","runtime_seconds":0.34682887,"progress":"1.9KB/1.9KB"},{"desc":"uploading output.log","runtime_seconds":0.34681443,"progress":"130.0KB/130.0KB"}],"total_operations":2}}
+{"time":"2024-12-25T10:05:10.075665162Z","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2024-12-25T10:05:11.330496597Z","level":"INFO","msg":"stream: closing","id":"fvl4hz86"}
+{"time":"2024-12-25T10:05:11.330529287Z","level":"INFO","msg":"handler: closed","stream_id":"fvl4hz86"}
+{"time":"2024-12-25T10:05:11.330542046Z","level":"INFO","msg":"writer: Close: closed","stream_id":"fvl4hz86"}
+{"time":"2024-12-25T10:05:11.330630445Z","level":"INFO","msg":"sender: closed","stream_id":"fvl4hz86"}
+{"time":"2024-12-25T10:05:11.330642612Z","level":"INFO","msg":"stream: closed","id":"fvl4hz86"}

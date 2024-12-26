@@ -1,0 +1,72 @@
+{
+  "os":  "Linux-6.6.56+-x86_64-with-glibc2.35",
+  "python":  "CPython 3.10.12",
+  "startedAt":  "2024-12-24T09:17:18.420358Z",
+  "args":  [
+    "--train-folder",
+    "/kaggle/input/raf-db/rafdb_basic/train",
+    "--valid-folder",
+    "/kaggle/input/raf-db/rafdb_basic/test",
+    "--epochs",
+    "120",
+    "--wandb-project-name",
+    "RESNET_BAM_RAFDB",
+    "--image-size",
+    "224",
+    "--attention_option",
+    "BAM",
+    "--result-path",
+    "/kaggle/working/channel_and_spatial_attentions_with_cnn/working/experiment",
+    "--image-channels",
+    "3",
+    "--color-mode",
+    "rgb",
+    "--batch-size",
+    "32",
+    "--optimizer",
+    "adamax",
+    "--lr",
+    "0.0001",
+    "--num-classes",
+    "7",
+    "--model",
+    "resnet50"
+  ],
+  "program":  "/kaggle/working/channel_and_spatial_attentions_with_cnn/train.py",
+  "codePath":  "train.py",
+  "git":  {
+    "remote":  "git@github.com:phungbminh/channel_and_spatial_attentions_with_cnn.git",
+    "commit":  "98ed4736938d73bbb0531860a4f8561f005c0704"
+  },
+  "email":  "khmt.23.colab@gmail.com",
+  "root":  "/kaggle/working/channel_and_spatial_attentions_with_cnn",
+  "host":  "10c2f85d65ec",
+  "executable":  "/usr/bin/python3",
+  "codePathLocal":  "train.py",
+  "cpu_count":  2,
+  "cpu_count_logical":  4,
+  "gpu":  "Tesla P100-PCIE-16GB",
+  "gpu_count":  1,
+  "disk":  {
+    "/":  {
+      "total":  "8656922775552",
+      "used":  "6482868609024"
+    }
+  },
+  "memory":  {
+    "total":  "33662353408"
+  },
+  "cpu":  {
+    "count":  2,
+    "countLogical":  4
+  },
+  "gpu_nvidia":  [
+    {
+      "name":  "Tesla P100-PCIE-16GB",
+      "memoryTotal":  "17179869184",
+      "cudaCores":  3584,
+      "architecture":  "Pascal"
+    }
+  ],
+  "cudaVersion":  "12.6"
+}

@@ -1,0 +1,13 @@
+/kaggle/input/raf-db/rafdb_basic/train
+/kaggle/input/raf-db/rafdb_basic/test
+224
+Traceback (most recent call last):
+  File "/kaggle/working/channel_and_spatial_attentions_with_cnn/train.py", line 187, in <module>
+    main()
+  File "/kaggle/working/channel_and_spatial_attentions_with_cnn/train.py", line 91, in main
+    train_generator = training_datagen.flow_from_directory(TRAINING_DIR, target_size=(img_size, img_size), batch_size=args.batch_size, class_mode=class_mode, color_mode=args.color_mode)
+  File "/usr/local/lib/python3.10/dist-packages/keras/src/legacy/preprocessing/image.py", line 1138, in flow_from_directory
+    return DirectoryIterator(
+  File "/usr/local/lib/python3.10/dist-packages/keras/src/legacy/preprocessing/image.py", line 453, in __init__
+    for subdir in sorted(os.listdir(directory)):
+FileNotFoundError: [Errno 2] No such file or directory: '/kaggle/input/raf-db/rafdb_basic/train'

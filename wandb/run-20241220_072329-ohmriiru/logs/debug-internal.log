@@ -1,0 +1,17 @@
+{"time":"2024-12-20T07:23:29.683595727Z","level":"INFO","msg":"using version","core version":"0.19.1"}
+{"time":"2024-12-20T07:23:29.683618787Z","level":"INFO","msg":"created symlink","path":"/kaggle/working/channel_and_spatial_attentions_with_cnn/wandb/run-20241220_072329-ohmriiru/logs/debug-core.log"}
+{"time":"2024-12-20T07:23:29.789926826Z","level":"INFO","msg":"created new stream","id":"ohmriiru"}
+{"time":"2024-12-20T07:23:29.7899623Z","level":"INFO","msg":"stream: started","id":"ohmriiru"}
+{"time":"2024-12-20T07:23:29.790064627Z","level":"INFO","msg":"handler: started","stream_id":"ohmriiru"}
+{"time":"2024-12-20T07:23:29.791096189Z","level":"INFO","msg":"sender: started","stream_id":"ohmriiru"}
+{"time":"2024-12-20T07:23:29.791116546Z","level":"INFO","msg":"writer: Do: started","stream_id":"ohmriiru"}
+{"time":"2024-12-20T07:23:30.099456943Z","level":"INFO","msg":"Starting system monitor"}
+{"time":"2024-12-20T09:49:45.478074208Z","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2024-12-20T09:49:45.479005597Z","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2024-12-20T09:49:46.448298931Z","level":"INFO","msg":"handler: operation stats","stats":{"operations":[{"desc":"uploading config.yaml","runtime_seconds":0.488954428,"progress":"1.9KB/1.9KB"},{"desc":"uploading output.log","runtime_seconds":0.488939886,"progress":"59.3KB/59.3KB"}],"total_operations":2}}
+{"time":"2024-12-20T09:49:46.785878857Z","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2024-12-20T09:49:47.949886944Z","level":"INFO","msg":"stream: closing","id":"ohmriiru"}
+{"time":"2024-12-20T09:49:47.949918635Z","level":"INFO","msg":"handler: closed","stream_id":"ohmriiru"}
+{"time":"2024-12-20T09:49:47.949933409Z","level":"INFO","msg":"writer: Close: closed","stream_id":"ohmriiru"}
+{"time":"2024-12-20T09:49:47.949941891Z","level":"INFO","msg":"sender: closed","stream_id":"ohmriiru"}
+{"time":"2024-12-20T09:49:47.950013365Z","level":"INFO","msg":"stream: closed","id":"ohmriiru"}
