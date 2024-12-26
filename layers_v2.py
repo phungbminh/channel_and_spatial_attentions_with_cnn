@@ -1,6 +1,6 @@
 from tensorflow.keras import layers
 from tensorflow.keras.layers import Input, Conv2D, MaxPool2D, Flatten, Dense, BatchNormalization, Activation
-from attention_modules import *
+from attention_modules_v2 import *
 from keras import backend
 
 
