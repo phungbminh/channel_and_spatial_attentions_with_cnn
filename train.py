@@ -8,6 +8,7 @@ import argparse
 import pickle
 import wandb
 from wandb.integration.keras import WandbMetricsLogger
+
 import os, sys, argparse, pytz, json
 from datetime import datetime
 from model_cnn import resnet50,vgg16, resnet18
@@ -55,8 +56,10 @@ def main():
     parser.add_argument('--use-wandb', default=1, type=int, help='Use wandb')
     parser.add_argument('--wandb-api-key', default='cfa48af5b389548142fc1fcc1ab79cbcfe7fc07b', type=str, help='wantdb api key')
     parser.add_argument('--wandb-project-name', default='Resnet50_BAM_v2', type=str,help='name project to store data in wantdb')
+    parser.add_argument('--wandb-runer', default='', type=str, help='')
     parser.add_argument('--attention_option', default='None', type=str, help='CBAM, BAM, scSE')
     parser.add_argument('--color-mode', default='grayscale', type=str, help='Color mode')
+
 
     # args, unknown = parser.parse_known_args()
 
@@ -66,7 +69,7 @@ def main():
     if args.use_wandb == 1:
         wandb.login(key=args.wandb_api_key)
         # Initialize WandB with the configuration from the parsed arguments
-        wandb.init(project=args.wandb_project_name, config=vars(args))
+        wandb.init(project=args.wandb_project_name,  name='your_run_name', config=vars(args))
 
     # chuan bi dataset de training
     TRAINING_DIR = args.train_folder
