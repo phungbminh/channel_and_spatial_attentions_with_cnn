@@ -69,7 +69,7 @@ def main():
     if args.use_wandb == 1:
         wandb.login(key=args.wandb_api_key)
         # Initialize WandB with the configuration from the parsed arguments
-        wandb.init(project=args.wandb_project_name,  name='your_run_name', config=vars(args))
+        wandb.init(project=args.wandb_project_name,  name=args.wandb_runer, config=vars(args))
 
     # chuan bi dataset de training
     TRAINING_DIR = args.train_folder
