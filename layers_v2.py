@@ -2,21 +2,22 @@ from tensorflow.keras import layers
 from tensorflow.keras.layers import Input, Conv2D, MaxPool2D, Flatten, Dense, BatchNormalization, Activation
 from attention_modules_v2 import *
 from keras import backend
+from layers import select_attention
 
 
-def select_attention(input_layer, filter_num, block_name=None, layer_name=None):
-	if block_name == "SEnet":
-		output = squeeze_excitation_block(input_layer, filter_num, 16.0, name=layer_name + "_SNE_")
-		return output
-	if block_name == "ECANet":
-		output = ECA_Net_block(input_layer, kernel_size=3, adaptive=True, name=layer_name + "_ECANet_")
-		return output
-	if block_name == "CBAM":
-		output = CBAM_block(input_layer, filter_num, reduction_ratio=16, name=layer_name + "_CBAM_")
-		return output
-	else:
-		output = input_layer
-	return output
+# def select_attention(input_layer, filter_num, block_name=None, layer_name=None):
+# 	if block_name == "SEnet":
+# 		output = squeeze_excitation_block(input_layer, filter_num, 16.0, name=layer_name + "_SNE_")
+# 		return output
+# 	if block_name == "ECANet":
+# 		output = ECA_Net_block(input_layer, kernel_size=3, adaptive=True, name=layer_name + "_ECANet_")
+# 		return output
+# 	if block_name == "CBAM":
+# 		output = CBAM_block(input_layer, filter_num, reduction_ratio=16, name=layer_name + "_CBAM_")
+# 		return output
+# 	else:
+# 		output = input_layer
+# 	return output
 
 
 def residual_block_v1(x, filters, kernel_size=3, stride=1, conv_shortcut=True,
@@ -62,8 +63,9 @@ def residual_block_v1(x, filters, kernel_size=3, stride=1, conv_shortcut=True,
 	if attention == "":
 		x = x
 	else:
-		x = select_attention(x, filters3, block_name=attention, layer_name=name)
-
+		#x = select_attention(x, filters3, block_name=attention, layer_name=name)
+		x = select_attention(x, filter_num=filters3, attention_type=attention,
+							   layer_name='Attention_{}'.format(name))
 	x = layers.Add(name=name + '_Add')([shortcut, x])
 	x = layers.Activation('elu', name=name + '_Output')(x)
 
