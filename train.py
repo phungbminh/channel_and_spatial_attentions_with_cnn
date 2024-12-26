@@ -12,7 +12,7 @@ from wandb.integration.keras import WandbMetricsLogger
 import os, sys, argparse, pytz, json
 from datetime import datetime
 from model_cnn import resnet50,vgg16, resnet18
-from cnn_models_v2 import model_ResNet_V1
+from model_cnn_v2 import ResNet, VGG16
 from tensorflow.keras import layers, Model
 
 
@@ -101,16 +101,17 @@ def main():
 
     model = Model()
     if args.model == 'resnet50':
-        model = resnet50(input_shape=(args.image_size, args.image_size, args.image_channels), num_classes=classes,attention_type=args.attention_option)
+        model = resnet50(input_shape=(args.image_size, args.image_size, args.image_channels), num_classes=classes,
+                        attention_type=args.attention_option)
 
     if args.model == 'resnet18':
         # model = resnet18(input_shape=(args.image_size, args.image_size, args.image_channels), num_classes=classes,
         #               attention_type=args.attention_option)
-
-        model = model_ResNet_V1(model="ResNet18", img_height=args.image_size, img_width=args.image_size, attention=args.attention_option,
-                                pooling="avg", input_channel=args.image_channels)
+        model = ResNet(model_name="ResNet18", input_shape=(args.image_size, args.image_size, args.image_channels),
+                       attention=args.attention_option,  pooling="avg")
     if args.model == 'vgg16':
-        model = vgg16(input_shape=(args.image_size, args.image_size, args.image_channels), num_classes=classes,attention_type=args.attention_option)
+        model = VGG16(input_shape=(args.image_size, args.image_size, args.image_channels), num_classes=classes,
+                      attention_type=args.attention_option)
     model.build(input_shape=(None, args.image_size, args.image_size, args.image_channels))
     model.summary()
 
@@ -153,7 +154,6 @@ def main():
     # logger
     log_path = experiments_dir
     if not os.path.exists(log_path):
-        # Nếu chưa tồn tại, tạo thư mục
         os.makedirs(log_path)
     cb_log = CSVLogger(log_path + '/log.csv')
     callbacks.append(cb_log)
