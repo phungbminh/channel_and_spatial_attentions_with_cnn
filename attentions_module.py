@@ -46,8 +46,9 @@ def cbam_block(input_layer, filter_num, reduction_ratio=16, kernel_size=7, name=
     spatial = layers.Conv2D(1, kernel_size=kernel_size, padding='same', name=name + "_Spatial_Conv2D_{}".format(input_channel))(spatial)
     spatial_out = layers.Activation('sigmoid', name=name + "_Spatial_Sigmoid_{}".format(input_channel))(spatial)
 
-    return layers.multiply([channel_output, spatial_out])
-
+    #return layers.multiply([channel_output, spatial_out])
+    multiply_layer = Multiply(name='Attention_CBAM_output_layer')([channel_output, spatial_out])
+    return multiply_layer
 
 #BAM-BLOCK---------------------------------------------
 def bam_block(inputs, filter_num, reduction_ratio=16, num_layers=1, dilation_val=4, name=None):
@@ -70,10 +71,10 @@ def bam_block(inputs, filter_num, reduction_ratio=16, num_layers=1, dilation_val
     spatial = Conv2D(1, kernel_size=1, padding='same', name=name + "_Spatial_Conv2D_4")(spatial)
     spatial = BatchNormalization()(spatial)
 
-    combined = Add()([channel, spatial])
+    combined = Add(name='combined_layer')([channel, spatial])
     combined = Activation('sigmoid', name=name + "_Combined_Sigmoid")(combined)
 
-    output = inputs + inputs * combined
+    output = Add(name='Attention_BAM_output_layer')([inputs, inputs * combined])
 
     return output
 
@@ -97,7 +98,8 @@ def scse_block(inputs, filter_num, reduction_ratio=16, name=None):
     spatial_se = Activation('sigmoid', name=name + "_Spatial_Squeeze_Activation")(spatial_se)
     spatial_se = Multiply()([inputs, spatial_se])  # Element-wise multiplication
 
-    return Add()([channel_se, spatial_se])  # Combine channel and spatial attention
+    output = Add(name='Attention_SCSE_output_layer')([channel_se, spatial_se])
+    return output
 
 
 
