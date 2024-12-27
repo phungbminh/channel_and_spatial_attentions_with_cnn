@@ -167,7 +167,7 @@ def main():
                   metrics=['accuracy'])
 
     # Luu lai he so weight
-    best_model = ModelCheckpoint(args.model_path,
+    best_model = ModelCheckpoint(args.wandb_project_name + '_' + args.model_path,
                                  save_weights_only=False,
                                  monitor='val_accuracy',
                                  verbose=1,
