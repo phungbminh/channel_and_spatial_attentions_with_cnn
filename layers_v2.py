@@ -89,7 +89,7 @@ def vgg_conv_block(input, block_idx, filter, attention_type, activation='elu'):
     #     attention_output = select_attention(x, filter_num=filter, attention_type=attention_type, layer_name='Conv_Attention_')
     #     x = layers.Add(name='Conv_Last_Add' + str(block_idx))([attention_output, x])
     return x
-def vgg_conv(input_tensor, filters, block_num, activation='elu'):
+def vgg_conv(input_tensor, filters, block_num, activation='elu', attention_type=None):
     """
     Creates a VGG convolutional block.
 
@@ -107,4 +107,9 @@ def vgg_conv(input_tensor, filters, block_num, activation='elu'):
     for i, f in enumerate(filters):
         x = Conv2D(filters=f, kernel_size=3, padding='same', activation=activation, name=f"Conv{block_num}.{i + 1}")(x)
     x = MaxPool2D(pool_size=2, strides=2, padding='same', name=f"MaxPool2D_{block_num}")(x)
+
+    if attention_type is not None:
+        x = select_attention(x, filter_num=64, attention_type=attention_type, layer_name='Conv{}_Attention_'.format(block_num))
+    else:
+        x = x
     return x

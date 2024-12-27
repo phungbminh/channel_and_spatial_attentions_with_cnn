@@ -35,14 +35,6 @@ def VGG16(input_shape, num_classes=7, attention_type=""):
         net = net
         model_name = "VGG16"
 
-    filters = [128, 256, 512, 512]
-    # for i in range(len(filters)):
-    # 	net = vgg_conv_block(input=net,
-    # 						 block_idx=(i + 2),
-    # 						 filter=filters[i],
-    # 						 attention_type=attention_type,
-    # 						 activation=activation)
-
     # 2nd Conv Block
     print('Conv2_x2')
     net = vgg_conv(net, filters=[128, 128], block_num=2, activation=activation)
@@ -57,93 +49,15 @@ def VGG16(input_shape, num_classes=7, attention_type=""):
     net = vgg_conv(net, filters=[512, 512, 512], block_num=5, activation=activation)
 
     # Fully connected layers
-    net = Flatten()(net)
+    #net = Flatten()(net) ->
+    net = GlobalAveragePooling2D(name="Final_AveragePooling")(net)
     net = Dense(units=4096, activation=activation, name="Dense1")(net)
-    net = Dropout(0.5)(net)
-    net = Dense(units=4096, activation=activation, name="Dense2")(net)
-    net = Dropout(0.5)(net)
+    #net = Dropout(0.2)(net)
+    #net = Dense(units=4096, activation=activation, name="Dense2")(net)
+    #net = Dropout(0.2)(net)
 
     output = Dense(units=num_classes, activation='softmax', name="DenseFinal")(net)
     model = Model(inputs=input, outputs=output, name=model_name)
-
-    return model
-
-
-def VGG19(img_height=48,
-          img_width=48,
-          a_hidden='elu',  # Hidden activation
-          a_output='softmax',  # Output activation
-          attention="",
-          num_classes=7):
-    """Function to output the VGG19 CNN Model
-       Args:
-          img_height: integer,default '48', input image height
-          img_width: integer,default '48', input image width
-          a_hidden: string,default 'relu', activation function used for hidden layerss
-          a_output: string, default 'softmax', output activation function
-          num_classes: integer, default 7,states the number of classes
-        Returns:
-          Output A `keras.Model` instance.
-    """
-    # Input
-    input_img = Input(shape=(img_height, img_width, 1), name="img")
-
-    # 1st Conv Block
-    x = Conv2D(filters=64, kernel_size=3, padding='same', activation=a_hidden, name="Conv1.1")(input_img)
-    x = Conv2D(filters=64, kernel_size=3, padding='same', activation=a_hidden, name="Conv1.2")(x)
-    x = MaxPool2D(pool_size=2, strides=2, padding='same', name="MaxPool2D_1")(x)
-
-    # 2nd Conv Block
-    x = Conv2D(filters=128, kernel_size=3, padding='same', activation=a_hidden, name="Conv2.1")(x)
-    x = Conv2D(filters=128, kernel_size=3, padding='same', activation=a_hidden, name="Conv2.2")(x)
-    x = MaxPool2D(pool_size=2, strides=2, padding='same', name="MaxPool2D_2")(x)
-
-    # 3rd Conv block
-    x = Conv2D(filters=256, kernel_size=3, padding='same', activation=a_hidden, name="Conv3.1")(x)
-    x = Conv2D(filters=256, kernel_size=3, padding='same', activation=a_hidden, name="Conv3.2")(x)
-    x = Conv2D(filters=256, kernel_size=3, padding='same', activation=a_hidden, name="Conv3.3")(x)
-    x = Conv2D(filters=256, kernel_size=3, padding='same', activation=a_hidden, name="Conv3.4")(x)
-    x = MaxPool2D(pool_size=2, strides=2, padding='same', name="MaxPool2D_3")(x)
-
-    # 4th Conv block
-    x = Conv2D(filters=512, kernel_size=3, padding='same', activation=a_hidden, name="Conv4.1")(x)
-    x = Conv2D(filters=512, kernel_size=3, padding='same', activation=a_hidden, name="Conv4.2")(x)
-    x = Conv2D(filters=512, kernel_size=3, padding='same', activation=a_hidden, name="Conv4.3")(x)
-    x = Conv2D(filters=512, kernel_size=3, padding='same', activation=a_hidden, name="Conv4.4")(x)
-    x = MaxPool2D(pool_size=2, strides=2, padding='same', name="MaxPool2D_4")(x)
-
-    # 5th Conv block
-    x = Conv2D(filters=512, kernel_size=3, padding='same', activation=a_hidden, name="Conv5.1")(x)
-    x = Conv2D(filters=512, kernel_size=3, padding='same', activation=a_hidden, name="Conv5.2")(x)
-    x = Conv2D(filters=512, kernel_size=3, padding='same', activation=a_hidden, name="Conv5.3")(x)
-    x = Conv2D(filters=512, kernel_size=3, padding='same', activation=a_hidden, name="Conv5.4")(x)
-    x = MaxPool2D(pool_size=2, strides=2, padding='same', name="MaxPool2D_5")(x)
-
-    if attention == "":
-        x = x
-    else:
-        if attention == "SEnet":
-            attention_output = squeeze_excitation_block(x, 512, 16.0, name="Conv_Last_SNE_")
-        if attention == "ECANet":
-            attention_output = ECA_Net_block(x, adaptive=True, name="Conv_Last_ECANet_")
-        if attention == "CBAM":
-            attention_output = CBAM_block(x, 512, reduction_ratio=16, kernel_size=7, name="Conv_Last_CBAM_")
-
-        x = layers.Add(name='ConvLast_Add1')([attention_output, x])
-
-    # Fully connected layers
-    x = Flatten()(x)
-    x = Dense(units=4096, activation=a_hidden, name="Dense1")(x)
-    x = Dense(units=4096, activation=a_hidden, name="Dense2")(x)
-
-    output = Dense(units=num_classes, activation=a_output, name="DenseFinal")(x)
-
-    if attention == "":
-        model_name = "VGG19"
-    else:
-        model_name = "VGG19" + "_" + attention
-
-    model = Model(inputs=input_img, outputs=output, name=model_name)
 
     return model
 
