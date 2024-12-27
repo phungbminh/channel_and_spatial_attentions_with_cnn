@@ -8,9 +8,11 @@ import argparse
 import pickle
 import wandb
 from wandb.integration.keras import WandbMetricsLogger
+
 import os, sys, argparse, pytz, json
 from datetime import datetime
 from model_cnn import resnet50,vgg16, resnet18
+from model_cnn_v2 import ResNet, VGG16
 from tensorflow.keras import layers, Model
 
 
@@ -54,8 +56,10 @@ def main():
     parser.add_argument('--use-wandb', default=1, type=int, help='Use wandb')
     parser.add_argument('--wandb-api-key', default='cfa48af5b389548142fc1fcc1ab79cbcfe7fc07b', type=str, help='wantdb api key')
     parser.add_argument('--wandb-project-name', default='Resnet50_BAM_v2', type=str,help='name project to store data in wantdb')
+    parser.add_argument('--wandb-runer', default='', type=str, help='')
     parser.add_argument('--attention_option', default='None', type=str, help='CBAM, BAM, scSE')
     parser.add_argument('--color-mode', default='grayscale', type=str, help='Color mode')
+
 
     # args, unknown = parser.parse_known_args()
 
@@ -65,7 +69,7 @@ def main():
     if args.use_wandb == 1:
         wandb.login(key=args.wandb_api_key)
         # Initialize WandB with the configuration from the parsed arguments
-        wandb.init(project=args.wandb_project_name, config=vars(args))
+        wandb.init(project=args.wandb_project_name,  name=args.wandb_runer, config=vars(args))
 
     # chuan bi dataset de training
     TRAINING_DIR = args.train_folder
@@ -97,13 +101,17 @@ def main():
 
     model = Model()
     if args.model == 'resnet50':
-        model = resnet50(input_shape=(args.image_size, args.image_size, args.image_channels), num_classes=classes,attention_type=args.attention_option)
+        model = resnet50(input_shape=(args.image_size, args.image_size, args.image_channels), num_classes=classes,
+                        attention_type=args.attention_option)
 
     if args.model == 'resnet18':
-        model = resnet18(input_shape=(args.image_size, args.image_size, args.image_channels), num_classes=classes,
-                      attention_type=args.attention_option)
+        # model = resnet18(input_shape=(args.image_size, args.image_size, args.image_channels), num_classes=classes,
+        #               attention_type=args.attention_option)
+        model = ResNet(model_name="ResNet18", input_shape=(args.image_size, args.image_size, args.image_channels),
+                       attention=args.attention_option,  pooling="avg")
     if args.model == 'vgg16':
-        model = vgg16(input_shape=(args.image_size, args.image_size, args.image_channels), num_classes=classes,attention_type=args.attention_option)
+        model = VGG16(input_shape=(args.image_size, args.image_size, args.image_channels), num_classes=classes,
+                      attention_type=args.attention_option)
     model.build(input_shape=(None, args.image_size, args.image_size, args.image_channels))
     model.summary()
 
@@ -146,7 +154,6 @@ def main():
     # logger
     log_path = experiments_dir
     if not os.path.exists(log_path):
-        # Nếu chưa tồn tại, tạo thư mục
         os.makedirs(log_path)
     cb_log = CSVLogger(log_path + '/log.csv')
     callbacks.append(cb_log)
