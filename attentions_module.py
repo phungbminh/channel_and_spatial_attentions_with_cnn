@@ -42,11 +42,8 @@ def cbam_block(input_layer, filter_num, reduction_ratio=16, kernel_size=7, name=
     # max_pool2 = Lambda(lambda x: tf.keras.backend.max(x, axis=3, keepdims=True))(input_layer)
     # spatial = Concatenate(axis=3)([avg_pool2, max_pool2])
     # Sử dụng GlobalAveragePooling2D và GlobalMaxPooling2D
-    avg_pool2 = GlobalAveragePooling2D()(input_layer)
-    max_pool2 = GlobalMaxPooling2D()(input_layer)
-    num_channels = Lambda(lambda x: x.shape[-1])(input_layer)
-    avg_pool2 = Reshape((1, 1, num_channels))(avg_pool2)
-    max_pool2 = Reshape((1, 1, num_channels))(max_pool2)
+    avg_pool2 = tf.reduce_mean(input_layer, axis=3, keepdims=True)
+    max_pool2 = tf.reduce_max(input_layer, axis=3, keepdims=True)
     spatial = Concatenate(axis=3)([avg_pool2, max_pool2])
 
     spatial = Conv2D(1, kernel_size=kernel_size, padding='same', name=name + "_Spatial_Conv2D_{}".format(input_channel))(spatial)
