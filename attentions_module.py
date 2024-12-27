@@ -38,10 +38,14 @@ def cbam_block(input_layer, filter_num, reduction_ratio=16, kernel_size=7, name=
     channel_output = layers.multiply([input_layer, channel])
 
     # SPATIAL ATTENTION
-    avg_pool2 = layers.Lambda(lambda x: tf.reduce_mean(x, axis=axis, keepdims=True))(input_layer)
-    max_pool2 = layers.Lambda(lambda x: tf.reduce_max(x, axis=axis, keepdims=True))(input_layer)
-
-    spatial = layers.concatenate([avg_pool2, max_pool2], axis=axis)
+    # avg_pool2 = layers.Lambda(lambda x: tf.reduce_mean(x, axis=axis, keepdims=True))(input_layer)
+    # max_pool2 = layers.Lambda(lambda x: tf.reduce_max(x, axis=axis, keepdims=True))(input_layer)
+    #
+    # spatial = layers.concatenate([avg_pool2, max_pool2], axis=axis)
+    # #------
+    avg_pool2 = Lambda(lambda x: tf.keras.backend.mean(x, axis=3, keepdims=True))(input_layer)
+    max_pool2 = Lambda(lambda x: tf.keras.backend.max(x, axis=3, keepdims=True))(input_layer)
+    spatial = Concatenate(axis=3)([avg_pool2, max_pool2])
 
     spatial = layers.Conv2D(1, kernel_size=kernel_size, padding='same', name=name + "_Spatial_Conv2D_{}".format(input_channel))(spatial)
     spatial_out = layers.Activation('sigmoid', name=name + "_Spatial_Sigmoid_{}".format(input_channel))(spatial)
