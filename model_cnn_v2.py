@@ -114,5 +114,5 @@ def ResNet(model_name="ResNet50", input_shape=(48, 48, 3), a_output='softmax', p
         model_name = model_name
     else:
         model_name = model_name + "_" + attention
-    model = Model(inputs=input, outputs=output, name="ResNet: " + model_name)
+    model = Model(inputs=input, outputs=output, name=model_name)
     return model
