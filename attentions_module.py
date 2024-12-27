@@ -47,7 +47,7 @@ def cbam_block(input_layer, filter_num, reduction_ratio=16, kernel_size=7, name=
     spatial_out = layers.Activation('sigmoid', name=name + "_Spatial_Sigmoid_{}".format(input_channel))(spatial)
 
     #return layers.multiply([channel_output, spatial_out])
-    multiply_layer = Multiply(name='Attention_CBAM_output_layer')([channel_output, spatial_out])
+    multiply_layer = Multiply(name=name + 'Attention_CBAM_output_layer')([channel_output, spatial_out])
     return multiply_layer
 
 #BAM-BLOCK---------------------------------------------
@@ -98,7 +98,7 @@ def scse_block(inputs, filter_num, reduction_ratio=16, name=None):
     spatial_se = Activation('sigmoid', name=name + "_Spatial_Squeeze_Activation")(spatial_se)
     spatial_se = Multiply()([inputs, spatial_se])  # Element-wise multiplication
 
-    output = Add(name='Attention_SCSE_output_layer')([channel_se, spatial_se])
+    output = Add(name=name + 'Attention_SCSE_output_layer')([channel_se, spatial_se])
     return output
 
 
