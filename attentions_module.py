@@ -120,8 +120,10 @@ def spatial_attention(input_feature, name=None):
         channel = input_feature.shape[-1]
         cbam_feature = input_feature
 
-    avg_pool = Lambda(lambda x: K.mean(x, axis=3, keepdims=True))(cbam_feature)
-    max_pool = Lambda(lambda x: K.max(x, axis=3, keepdims=True))(cbam_feature)
+    avg_pool = Lambda(lambda x: tf.keras.backend.mean(x, axis=3, keepdims=True))(cbam_feature)
+    assert avg_pool.shape[-1] == 1
+    max_pool = Lambda(lambda x: tf.keras.backend.max(x, axis=3, keepdims=True))(cbam_feature)
+
     assert max_pool.shape[-1] == 1
     concat = Concatenate(axis=3)([avg_pool, max_pool])
     assert concat.shape[-1] == 2
