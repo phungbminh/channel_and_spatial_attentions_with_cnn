@@ -1,0 +1,99 @@
+_wandb:
+    value:
+        cli_version: 0.19.1
+        m:
+            - "1": batch/batch_step
+              "6":
+                - 3
+              "7": []
+            - "1": batch/accuracy
+              "5": 1
+              "6":
+                - 1
+                - 3
+              "7": []
+            - "1": batch/loss
+              "5": 1
+              "6":
+                - 1
+                - 3
+              "7": []
+            - "1": batch/learning_rate
+              "5": 1
+              "6":
+                - 1
+                - 3
+              "7": []
+        python_version: 3.10.12
+        t:
+            "1":
+                - 2
+                - 3
+                - 12
+                - 55
+            "2":
+                - 2
+                - 3
+                - 12
+                - 55
+            "3":
+                - 2
+                - 7
+                - 13
+                - 16
+                - 23
+                - 38
+                - 55
+            "4": 3.10.12
+            "5": 0.19.1
+            "8":
+                - 2
+                - 5
+            "12": 0.19.1
+            "13": linux-x86_64
+attention_option:
+    value: scSE
+batch_size:
+    value: 64
+class_mode:
+    value: sparse
+class_names_path:
+    value: class_names.pkl
+color_mode:
+    value: grayscale
+d_steps:
+    value: 32
+early_stopping:
+    value: 50
+epochs:
+    value: 120
+image_channels:
+    value: 1
+image_size:
+    value: 48
+lr:
+    value: 0.0001
+lr_scheduler:
+    value: ExponentialDecay
+model:
+    value: vgg16
+model_path:
+    value: 2024_12_27_23_34_55.h5.keras
+num_classes:
+    value: 7
+optimizer:
+    value: adamax
+result_path:
+    value: /kaggle/working/channel_and_spatial_attentions_with_cnn/working/experiment
+train_folder:
+    value: /kaggle/input/fer-2013/train
+use_wandb:
+    value: 1
+valid_folder:
+    value: /kaggle/input/fer-2013/test
+wandb_api_key:
+    value: cfa48af5b389548142fc1fcc1ab79cbcfe7fc07b
+wandb_project_name:
+    value: VGG_SCSE_FER
+wandb_runer:
+    value: 241227_phungbm711_fc
