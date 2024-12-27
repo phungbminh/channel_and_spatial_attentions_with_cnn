@@ -1,6 +1,6 @@
 from tensorflow.keras import Model
 from tensorflow.keras.layers import Input, Conv2D, MaxPool2D, Flatten, Dense
-
+import tensorflow as tf
 from layers_v2 import *
 from attention_modules_v2 import *
 from tensorflow.keras.layers import (Dropout, Activation, ZeroPadding2D, Input, Conv2D, MaxPool2D, Flatten, Dense,
@@ -51,7 +51,9 @@ def VGG16(input_shape, num_classes=7, attention_type=""):
     # Fully connected layers
     #net = Flatten()(net) ->
     net = GlobalAveragePooling2D(name="Final_AveragePooling")(net)
-    net = Dense(units=4096, activation=activation, name="Dense1")(net)
+    #net = Dense(units=4096, activation=activation, name="Dense1")(net)
+    net = Dense(units=512, activation=activation, kernel_regularizer=tf.keras.regularizers.l2(0.0005))(net)
+    net = Dropout(rate=0.2)(net)
     #net = Dropout(0.2)(net)
     #net = Dense(units=4096, activation=activation, name="Dense2")(net)
     #net = Dropout(0.2)(net)
