@@ -37,16 +37,16 @@ def VGG16(input_shape, num_classes=7, attention_type=""):
 
     # 2nd Conv Block
     print('Conv2_x2')
-    net = vgg_conv(net, filters=[128, 128], block_num=2, activation=activation)
+    net = vgg_conv(net, filters=[128, 128], block_num=2, activation=activation, attention_type=attention_type)
     # 3rd Conv Block
     print('Conv3_x3')
-    net = vgg_conv(net, filters=[256, 256, 256], block_num=3, activation=activation)
+    net = vgg_conv(net, filters=[256, 256, 256], block_num=3, activation=activation, attention_type=attention_type)
     # 4th Conv Block
     print('Conv4_x3')
-    net = vgg_conv(net, filters=[512, 512, 512], block_num=4, activation=activation)
+    net = vgg_conv(net, filters=[512, 512, 512], block_num=4, activation=activation, attention_type=attention_type)
     # 5th Conv Block
     print('Conv5_x3')
-    net = vgg_conv(net, filters=[512, 512, 512], block_num=5, activation=activation)
+    net = vgg_conv(net, filters=[512, 512, 512], block_num=5, activation=activation, attention_type=attention_type)
 
     # Fully connected layers
     #net = Flatten()(net) ->
