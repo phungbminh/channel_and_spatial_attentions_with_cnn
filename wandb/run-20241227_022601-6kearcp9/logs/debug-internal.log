@@ -1,0 +1,17 @@
+{"time":"2024-12-27T02:26:01.110800998Z","level":"INFO","msg":"using version","core version":"0.19.1"}
+{"time":"2024-12-27T02:26:01.110821952Z","level":"INFO","msg":"created symlink","path":"/kaggle/working/channel_and_spatial_attentions_with_cnn/wandb/run-20241227_022601-6kearcp9/logs/debug-core.log"}
+{"time":"2024-12-27T02:26:01.21758787Z","level":"INFO","msg":"created new stream","id":"6kearcp9"}
+{"time":"2024-12-27T02:26:01.217631606Z","level":"INFO","msg":"stream: started","id":"6kearcp9"}
+{"time":"2024-12-27T02:26:01.217765573Z","level":"INFO","msg":"handler: started","stream_id":"6kearcp9"}
+{"time":"2024-12-27T02:26:01.218343008Z","level":"INFO","msg":"sender: started","stream_id":"6kearcp9"}
+{"time":"2024-12-27T02:26:01.218362269Z","level":"INFO","msg":"writer: Do: started","stream_id":"6kearcp9"}
+{"time":"2024-12-27T02:26:01.423449291Z","level":"INFO","msg":"Starting system monitor"}
+{"time":"2024-12-27T07:17:52.548112769Z","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2024-12-27T07:17:52.548869821Z","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2024-12-27T07:17:53.548721498Z","level":"INFO","msg":"handler: operation stats","stats":{"operations":[{"desc":"uploading config.yaml","runtime_seconds":0.541959232,"progress":"2.0KB/2.0KB"},{"desc":"uploading output.log","runtime_seconds":0.541948616,"progress":"174.2KB/174.2KB"}],"total_operations":2}}
+{"time":"2024-12-27T07:17:53.961145681Z","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2024-12-27T07:17:55.122544126Z","level":"INFO","msg":"stream: closing","id":"6kearcp9"}
+{"time":"2024-12-27T07:17:55.122581159Z","level":"INFO","msg":"handler: closed","stream_id":"6kearcp9"}
+{"time":"2024-12-27T07:17:55.122596565Z","level":"INFO","msg":"writer: Close: closed","stream_id":"6kearcp9"}
+{"time":"2024-12-27T07:17:55.122614155Z","level":"INFO","msg":"sender: closed","stream_id":"6kearcp9"}
+{"time":"2024-12-27T07:17:55.122654948Z","level":"INFO","msg":"stream: closed","id":"6kearcp9"}
