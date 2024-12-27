@@ -2,7 +2,16 @@ import tensorflow as tf
 from tensorflow.keras.layers import (  GlobalAveragePooling2D, Dense, Conv2D, Activation, Multiply, Reshape, Add, AveragePooling2D, GlobalMaxPooling2D, multiply, Permute, Concatenate, Lambda, BatchNormalization, ReLU, Layer)
 from keras import backend as K
 from tensorflow.keras import layers
-
+class MeanLayer(Layer):
+    def __init__(self, **kwargs):
+        super(MeanLayer, self).__init__(**kwargs)
+    def call(self, inputs):
+        return tf.reduce_mean(inputs, axis=3, keepdims=True)
+class MaxLayer(Layer):
+    def __init__(self, **kwargs):
+        super(MaxLayer, self).__init__(**kwargs)
+    def call(self, inputs):
+        return tf.reduce_max(inputs, axis=3, keepdims=True)
 #CBAM-BLOCK---------------------------------------------
 def cbam_block(input_layer, filter_num, reduction_ratio=16, kernel_size=7, name=None):
     """CBAM: Convolutional Block Attention Module Block
@@ -41,9 +50,9 @@ def cbam_block(input_layer, filter_num, reduction_ratio=16, kernel_size=7, name=
     # avg_pool2 = Lambda(lambda x: tf.keras.backend.mean(x, axis=3, keepdims=True))(input_layer)
     # max_pool2 = Lambda(lambda x: tf.keras.backend.max(x, axis=3, keepdims=True))(input_layer)
     # spatial = Concatenate(axis=3)([avg_pool2, max_pool2])
-    # Sử dụng GlobalAveragePooling2D và GlobalMaxPooling2D
-    avg_pool2 = tf.reduce_mean(input_layer, axis=3, keepdims=True)
-    max_pool2 = tf.reduce_max(input_layer, axis=3, keepdims=True)
+
+    avg_pool2 = MeanLayer()(input_layer)
+    max_pool2 = MaxLayer()(input_layer)
     spatial = Concatenate(axis=3)([avg_pool2, max_pool2])
 
     spatial = Conv2D(1, kernel_size=kernel_size, padding='same', name=name + "_Spatial_Conv2D_{}".format(input_channel))(spatial)
