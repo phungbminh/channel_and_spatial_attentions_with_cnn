@@ -15,40 +15,47 @@ def cbam_block(input_layer, filter_num, reduction_ratio=16, kernel_size=7, name=
     Returns:
       Output A tensor for the CBAM attention block
     """
-    # input_channel = input_layer.shape[-1]
-    # num_squeeze = input_channel // reduction_ratio
-    #
-    # axis = -1
-    #
-    # # CHANNEL ATTENTION
-    # avg_pool = GlobalAveragePooling2D(name=name + "_Channel_AveragePooling_{}".format(input_channel))(input_layer)
-    # max_pool = GlobalMaxPooling2D(name=name + "_Channel_MaxPooling_{}".format(input_channel))(input_layer)
-    #
-    # # Shared MLP
-    # dense1 = Dense(num_squeeze, activation='relu', name=name + "_Channel_FC_1_{}".format(input_channel))
-    # dense2 = Dense(input_channel, name=name + "_Channel_FC_2_{}".format(input_channel))
-    #
-    # avg_out = dense2(dense1(avg_pool))
-    # max_out = dense2(dense1(max_pool))
-    #
-    # channel = Add()([avg_out, max_out])
-    # channel = Activation('sigmoid', name=name + "_Channel_Sigmoid_{}".format(input_channel))(channel)
-    # channel = Reshape((1, 1, input_channel), name=name + "_Channel_Reshape_{}".format(input_channel))(channel)
-    #
-    # channel_output = multiply([input_layer, channel])
-    #
-    # # SPATIAL ATTENTION
+    input_channel = input_layer.shape[-1]
+    num_squeeze = input_channel // reduction_ratio
+
+    axis = -1
+
+    # CHANNEL ATTENTION
+    avg_pool = GlobalAveragePooling2D(name=name + "_Channel_AveragePooling_{}".format(input_channel))(input_layer)
+    max_pool = GlobalMaxPooling2D(name=name + "_Channel_MaxPooling_{}".format(input_channel))(input_layer)
+
+    # Shared MLP
+    dense1 = Dense(num_squeeze, activation='relu', name=name + "_Channel_FC_1_{}".format(input_channel))
+    dense2 = Dense(input_channel, name=name + "_Channel_FC_2_{}".format(input_channel))
+
+    avg_out = dense2(dense1(avg_pool))
+    max_out = dense2(dense1(max_pool))
+
+    channel = Add()([avg_out, max_out])
+    channel = Activation('sigmoid', name=name + "_Channel_Sigmoid_{}".format(input_channel))(channel)
+    channel = Reshape((1, 1, input_channel), name=name + "_Channel_Reshape_{}".format(input_channel))(channel)
+
+    channel_output = multiply([input_layer, channel])
+
+    # SPATIAL ATTENTION
     # avg_pool2 = Lambda(lambda x: tf.keras.backend.mean(x, axis=3, keepdims=True))(input_layer)
     # max_pool2 = Lambda(lambda x: tf.keras.backend.max(x, axis=3, keepdims=True))(input_layer)
     # spatial = Concatenate(axis=3)([avg_pool2, max_pool2])
-    #
-    # spatial = Conv2D(1, kernel_size=kernel_size, padding='same', name=name + "_Spatial_Conv2D_{}".format(input_channel))(spatial)
-    # spatial_out = Activation('sigmoid', name=name + "_Spatial_Sigmoid_{}".format(input_channel))(spatial)
-    #
-    # multiply_layer = Multiply(name=name + 'Attention_CBAM_output_layer')([channel_output, spatial_out])
-    # return multiply_layer
-    feature = channel_attention(input_layer, reduction_ratio)
-    feature = spatial_attention(feature, name)
+    # Sử dụng GlobalAveragePooling2D và GlobalMaxPooling2D
+    avg_pool2 = GlobalAveragePooling2D()(input_layer)
+    max_pool2 = GlobalMaxPooling2D()(input_layer)
+    num_channels = Lambda(lambda x: x.shape[-1])(input_layer)
+    avg_pool2 = Reshape((1, 1, num_channels))(avg_pool2)
+    max_pool2 = Reshape((1, 1, num_channels))(max_pool2)
+    spatial = Concatenate(axis=3)([avg_pool2, max_pool2])
+
+    spatial = Conv2D(1, kernel_size=kernel_size, padding='same', name=name + "_Spatial_Conv2D_{}".format(input_channel))(spatial)
+    spatial_out = Activation('sigmoid', name=name + "_Spatial_Sigmoid_{}".format(input_channel))(spatial)
+
+    multiply_layer = Multiply(name=name + 'Attention_CBAM_output_layer')([channel_output, spatial_out])
+    return multiply_layer
+    # feature = channel_attention(input_layer, reduction_ratio)
+    # feature = spatial_attention(feature, name)
     return feature
 
 
