@@ -50,13 +50,13 @@ def cbam_block(input_layer, filter_num, reduction_ratio=16, kernel_size=7, name=
     # spatial = Concatenate(axis=3)([avg_pool2, max_pool2])
 
     # SPATIAL ATTENTION
-    # avg_pool2 = GlobalAveragePooling2D(keepdims=True)(input_layer)
-    # max_pool2 = GlobalMaxPooling2D(keepdims=True)(input_layer)
-    avg_pool2 = tf.reduce_mean(channel_output, axis=3, keepdims=True)  # spatial avgpool
-    max_pool2 = tf.reduce_max(channel_output, axis=3, keepdims=True)  # spatial maxpool
+    avg_pool2 = GlobalAveragePooling2D(keepdims=True)(channel_output)
+    max_pool2 = GlobalMaxPooling2D(keepdims=True)(channel_output)
+    # avg_pool2 = tf.reduce_mean(channel_output, axis=3, keepdims=True)  # spatial avgpool
+    # max_pool2 = tf.reduce_max(channel_output, axis=3, keepdims=True)  # spatial maxpool
 
     # spatial = Concatenate(axis=-1)([avg_pool2, max_pool2])
-    spatial = Concatenate(axis=3)([avg_pool2, max_pool2])
+    spatial = Concatenate(axis=-1)([avg_pool2, max_pool2])
 
     spatial = Conv2D(1, kernel_size=kernel_size, padding='same', name=name + "_Spatial_Conv2D_{}".format(input_channel))(spatial)
     spatial_out = Activation('sigmoid', name=name + "_Spatial_Sigmoid_{}".format(input_channel))(spatial)
