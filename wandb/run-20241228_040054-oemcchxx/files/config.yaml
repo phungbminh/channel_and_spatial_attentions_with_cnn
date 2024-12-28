@@ -1,0 +1,74 @@
+_wandb:
+    value:
+        cli_version: 0.19.1
+        m: []
+        python_version: 3.10.12
+        t:
+            "1":
+                - 2
+                - 3
+                - 12
+                - 55
+            "2":
+                - 2
+                - 3
+                - 12
+                - 55
+            "3":
+                - 13
+                - 16
+                - 23
+                - 55
+            "4": 3.10.12
+            "5": 0.19.1
+            "8":
+                - 2
+                - 5
+            "12": 0.19.1
+            "13": linux-x86_64
+attention_option:
+    value: CBAM
+batch_size:
+    value: 64
+class_mode:
+    value: sparse
+class_names_path:
+    value: class_names.pkl
+color_mode:
+    value: rgb
+d_steps:
+    value: 32
+early_stopping:
+    value: 50
+epochs:
+    value: 120
+image_channels:
+    value: 3
+image_size:
+    value: 32
+lr:
+    value: 0.0001
+lr_scheduler:
+    value: ExponentialDecay
+model:
+    value: resnet18
+model_path:
+    value: 2024_12_28_11_00_53.h5.keras
+num_classes:
+    value: 10
+optimizer:
+    value: adamax
+result_path:
+    value: /kaggle/working/channel_and_spatial_attentions_with_cnn/working/experiment
+train_folder:
+    value: /kaggle/input/cifa-10/cifa-10/train
+use_wandb:
+    value: 1
+valid_folder:
+    value: /kaggle/input/cifa-10/cifa-10/test
+wandb_api_key:
+    value: cfa48af5b389548142fc1fcc1ab79cbcfe7fc07b
+wandb_project_name:
+    value: RESNET_CBAM_CIFA
+wandb_runer:
+    value: 251227_tramnlt_fc
