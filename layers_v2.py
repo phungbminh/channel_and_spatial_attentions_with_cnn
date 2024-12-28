@@ -109,7 +109,8 @@ def vgg_conv(input_tensor, filters, block_num, activation='elu', attention_type=
     x = MaxPool2D(pool_size=2, strides=2, padding='same', name=f"MaxPool2D_{block_num}")(x)
 
     if attention_type is not None:
-        x = select_attention(x, filter_num=64, attention_type=attention_type, layer_name='Conv{}_Attention_'.format(block_num))
+        attention_output = select_attention(x, filter_num=64, attention_type=attention_type, layer_name='Conv{}_Attention_'.format(block_num))
+        x = layers.Add(name='Conv{}_Add_Att'.format(block_num))([attention_output, x])
     else:
         x = x
     return x
