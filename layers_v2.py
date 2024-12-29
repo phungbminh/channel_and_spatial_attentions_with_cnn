@@ -122,7 +122,7 @@ def ResidualBlock(x, filters, kernel_size, weight_decay, downsample=True, attent
                          name=name + '_2_Conv2D_BN'
                          )
 
-    if attention == "":
+    if attention is None:
         residual = residual
     else:
         residual = select_attention(residual, filter_num=filters, attention_type=attention, layer_name='{}_Attention_'.format( name))
