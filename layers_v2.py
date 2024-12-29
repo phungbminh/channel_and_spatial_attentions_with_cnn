@@ -121,7 +121,7 @@ def ResidualBlock(x, filters, kernel_size, weight_decay, downsample=True, attent
     if attention == "":
         residual = residual
     else:
-        residual = select_attention(residual, filter_num=filters, attention_type=attention, layer_name='{}_Attention_{}'.format(attention, name))
+        residual = select_attention(residual, filter_num=filters, attention_type=attention, layer_name='{}_Attention_'.format( name))
     out = layers.add([residual_x, residual])
 
     out = Activation('relu')(out)
