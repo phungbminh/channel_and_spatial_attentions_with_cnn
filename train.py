@@ -108,11 +108,11 @@ def main():
     if args.model == 'resnet18':
         # model = resnet18(input_shape=(args.image_size, args.image_size, args.image_channels), num_classes=classes,
         #               attention_type=args.attention_option)
-        # model = ResNet(model_name="ResNet18", input_shape=(args.image_size, args.image_size, args.image_channels),
-        #                attention=args.attention_option,  pooling="avg")
+        model = ResNet(model_name="ResNet18", input_shape=(args.image_size, args.image_size, args.image_channels),
+                       attention=args.attention_option,  pooling="avg")
 
-        weight_decay = 1e-4
-        model = ResNet18(input_shape=(args.image_size, args.image_size, args.image_channels), classes=classes, weight_decay=weight_decay, attention=args.attention_option)
+        # weight_decay = 1e-4
+        # model = ResNet18(input_shape=(args.image_size, args.image_size, args.image_channels), classes=classes, weight_decay=weight_decay, attention=args.attention_option)
     if args.model == 'vgg16':
         model = VGG16(input_shape=(args.image_size, args.image_size, args.image_channels), num_classes=classes,
                       attention_type=args.attention_option)

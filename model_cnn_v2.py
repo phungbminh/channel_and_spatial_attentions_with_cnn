@@ -92,6 +92,7 @@ def ResNet(model_name="ResNet50", input_shape=(48, 48, 3), a_output='softmax', p
     x = layers.Conv2D(64, 7, strides=2, name='Conv1')(x)
     x = layers.BatchNormalization(axis=batch_axis, epsilon=1.001e-5, name='Conv1_BN')(x)
     x = layers.Activation('relu', name='Conv1_relu')(x)
+
     #
     # x = layers.ZeroPadding2D(padding=((1, 1), (1, 1)), name='MaxPool2D_1_Pad')(x)
     # x = layers.MaxPooling2D(3, strides=2, name='MaxPool2D_1')(x)
@@ -104,7 +105,7 @@ def ResNet(model_name="ResNet50", input_shape=(48, 48, 3), a_output='softmax', p
     print('Stage 3: Conv4_x{}'.format(num_blocks[2]))
     x = stage(x, [256, 256, 1024], num_blocks[2], name='Conv4_x{}'.format(num_blocks[2]), attention=attention)
     print('Stage 4: Conv5_x{}'.format(num_blocks[3]))
-    x = stage(x, [512, 512, 2048], num_blocks[3], name='Conv5_x{}'.format(num_blocks[2]), attention=attention)
+    x = stage(x, [512, 512, 2048], num_blocks[3], name='Conv5_x{}'.format(num_blocks[2]), attention=None)
 
     # Output
     if pooling == 'avg':
