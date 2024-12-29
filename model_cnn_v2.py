@@ -129,6 +129,14 @@ def ResNet18(classes, input_shape, weight_decay=1e-4, attention=None):
     # x = conv2d_bn_relu(x, filters=64, kernel_size=(7, 7), weight_decay=weight_decay, strides=(2, 2))
     # x = MaxPool2D(pool_size=(3, 3), strides=(2, 2),  padding='same')(x)
     x = conv2d_bn_relu(x, filters=64, kernel_size=(3, 3), weight_decay=weight_decay, strides=(1, 1))
+    if attention is not None:
+        attention_output = select_attention(x, filter_num=64, attention_type=attention, layer_name='Conv1.1_Attention_')
+        x = layers.Add(name='Conv1_Add_Att')([attention_output, x])
+        model_name = 'ResNet18' + "_" + attention
+
+    else:
+        model_name = 'ResNet18'
+        x = x
     # # conv 2
     print('Conv2:')
     x = ResidualBlock(x, filters=64, kernel_size=(3, 3), weight_decay=weight_decay, downsample=False, attention=attention, name='Block2.1')
@@ -149,9 +157,6 @@ def ResNet18(classes, input_shape, weight_decay=1e-4, attention=None):
     #x = Flatten()(x)
     x = GlobalAveragePooling2D(name="Final_AveragePooling")(x)
     x = Dense(classes, activation='softmax')(x)
-    if attention == "":
-        model_name = 'ResNet18'
-    else:
-        model_name = 'ResNet18' + "_" + attention
+
     model = Model(inputs=input, outputs=x, name=model_name)
     return model
