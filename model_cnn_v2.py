@@ -45,10 +45,10 @@ def VGG16(input_shape, num_classes=7, attention_type=""):
     net = vgg_conv(net, filters=[256, 256, 256], block_num=3, activation=activation, attention_type=attention_type)
     # 4th Conv Block
     print('Conv4_x3')
-    net = vgg_conv(net, filters=[512, 512, 512], block_num=4, activation=activation, attention_type=attention_type)
+    net = vgg_conv(net, filters=[512, 512, 512], block_num=4, activation=activation, attention_type='None')
     # 5th Conv Block
     print('Conv5_x3')
-    net = vgg_conv(net, filters=[512, 512, 512], block_num=5, activation=activation, attention_type=attention_type)
+    net = vgg_conv(net, filters=[512, 512, 512], block_num=5, activation=activation, attention_type='None')
 
     # Fully connected layers
     #net = Flatten()(net) ->
@@ -139,12 +139,12 @@ def ResNet18(classes, input_shape, weight_decay=1e-4, attention=None):
     x = ResidualBlock(x, filters=128, kernel_size=(3, 3), weight_decay=weight_decay, downsample=False, attention=attention, name='Block3.2')
     # # conv 4
     print('Conv4:')
-    x = ResidualBlock(x, filters=256, kernel_size=(3, 3), weight_decay=weight_decay, downsample=True, attention=attention,name='Block4.1')
-    x = ResidualBlock(x, filters=256, kernel_size=(3, 3), weight_decay=weight_decay, downsample=False, attention=attention, name='Block4.2')
+    x = ResidualBlock(x, filters=256, kernel_size=(3, 3), weight_decay=weight_decay, downsample=True, attention='None',name='Block4.1')
+    x = ResidualBlock(x, filters=256, kernel_size=(3, 3), weight_decay=weight_decay, downsample=False, attention='None', name='Block4.2')
     # # conv 5
     print('Conv5:')
-    x = ResidualBlock(x, filters=512, kernel_size=(3, 3), weight_decay=weight_decay, downsample=True, attention=attention, name='Block5.1')
-    x = ResidualBlock(x, filters=512, kernel_size=(3, 3), weight_decay=weight_decay, downsample=False, attention=attention, name='Block5.2')
+    x = ResidualBlock(x, filters=512, kernel_size=(3, 3), weight_decay=weight_decay, downsample=True, attention='None', name='Block5.1')
+    x = ResidualBlock(x, filters=512, kernel_size=(3, 3), weight_decay=weight_decay, downsample=False, attention='None', name='Block5.2')
     x = AveragePooling2D(pool_size=(4, 4), padding='valid')(x)
     #x = Flatten()(x)
     x = GlobalAveragePooling2D(name="Final_AveragePooling")(x)
