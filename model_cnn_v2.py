@@ -29,7 +29,8 @@ def VGG16(input_shape, num_classes=7, attention_type=""):
     net = MaxPool2D(pool_size=2, strides=2, padding='same', name="MaxPool2D_1")(net)
 
     if attention_type is not None:
-        net = select_attention(net, filter_num=64, attention_type=attention_type, layer_name='Conv1_block1_Attention_')
+        attention_output = select_attention(net, filter_num=64, attention_type=attention_type, layer_name='Conv1_block1_Attention_')
+        net = layers.Add(name='Conv1_Add_Att')([attention_output, net])
         model_name = "VGG16" + "_" + attention_type
     else:
         net = net
@@ -52,7 +53,7 @@ def VGG16(input_shape, num_classes=7, attention_type=""):
     #net = Flatten()(net) ->
     net = GlobalAveragePooling2D(name="Final_AveragePooling")(net)
     #net = Dense(units=4096, activation=activation, name="Dense1")(net)
-    net = Dense(units=512, activation=activation, kernel_regularizer=tf.keras.regularizers.l2(0.0005))(net)
+    net = Dense(units=2048, activation=activation, kernel_regularizer=tf.keras.regularizers.l2(0.0005))(net)
     net = Dropout(rate=0.2)(net)
     #net = Dropout(0.2)(net)
     #net = Dense(units=4096, activation=activation, name="Dense2")(net)
