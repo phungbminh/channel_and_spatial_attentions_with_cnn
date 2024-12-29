@@ -1,8 +1,0 @@
-{"time":"2024-12-19T15:30:42.813304281Z","level":"INFO","msg":"using version","core version":"0.19.1"}
-{"time":"2024-12-19T15:30:42.813338072Z","level":"INFO","msg":"created symlink","path":"/kaggle/working/channel_and_spatial_attentions_with_cnn/wandb/run-20241219_153042-ph8nqtk1/logs/debug-core.log"}
-{"time":"2024-12-19T15:30:42.918422352Z","level":"INFO","msg":"created new stream","id":"ph8nqtk1"}
-{"time":"2024-12-19T15:30:42.918457154Z","level":"INFO","msg":"stream: started","id":"ph8nqtk1"}
-{"time":"2024-12-19T15:30:42.918497133Z","level":"INFO","msg":"writer: Do: started","stream_id":"ph8nqtk1"}
-{"time":"2024-12-19T15:30:42.91866447Z","level":"INFO","msg":"handler: started","stream_id":"ph8nqtk1"}
-{"time":"2024-12-19T15:30:42.918686902Z","level":"INFO","msg":"sender: started","stream_id":"ph8nqtk1"}
-{"time":"2024-12-19T15:30:43.064173652Z","level":"INFO","msg":"Starting system monitor"}
