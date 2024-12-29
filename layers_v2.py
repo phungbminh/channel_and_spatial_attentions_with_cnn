@@ -4,6 +4,7 @@ from attention_modules_v2 import *
 from attentions_module import bam_block, scse_block, cbam_block
 from tensorflow.keras.layers import Conv2D, Add,MaxPool2D
 from tensorflow.keras import layers
+from keras.regularizers import l2
 def select_attention(feature, filter_num, attention_type='CBAM', ratio=16, layer_name=None):
     if attention_type == 'CBAM':
         feature = cbam_block(feature, filter_num, reduction_ratio=ratio, name=layer_name + "_CBAM_")

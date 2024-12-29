@@ -5,7 +5,8 @@ from layers_v2 import *
 from attention_modules_v2 import *
 from tensorflow.keras.layers import (Dropout, Activation, ZeroPadding2D, Input, Conv2D, MaxPool2D, Flatten, Dense,
                                      MaxPooling2D, BatchNormalization, ReLU, GlobalAveragePooling2D, AveragePooling2D)
-from keras.regularizers import l2
+
+
 
 def gpu_check():
     print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
