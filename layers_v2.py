@@ -79,7 +79,7 @@ def stage(x, filters, blocks, attention, stride1=2, name=None):
     return x
 
 
-def conv2d_bn(x, filters, kernel_size, weight_decay=.0, strides=(1, 1),name=None):
+def conv2d_bn(x, filters, kernel_size, weight_decay=.0, strides=(1, 1),name=""):
     layer = Conv2D(filters=filters,
                    kernel_size=kernel_size,
                    strides=strides,
@@ -92,13 +92,13 @@ def conv2d_bn(x, filters, kernel_size, weight_decay=.0, strides=(1, 1),name=None
     return layer
 
 
-def conv2d_bn_relu(x, filters, kernel_size, weight_decay=.0, strides=(1, 1), name=None):
+def conv2d_bn_relu(x, filters, kernel_size, weight_decay=.0, strides=(1, 1), name=""):
     layer = conv2d_bn(x, filters, kernel_size, weight_decay, strides, name)
     layer = Activation('relu', name=name + '_Relu')(layer)
     return layer
 
 
-def ResidualBlock(x, filters, kernel_size, weight_decay, downsample=True, attention=None, name=None):
+def ResidualBlock(x, filters, kernel_size, weight_decay, downsample=True, attention=None, name=""):
     if downsample:
         # residual_x = conv2d_bn_relu(x, filters, kernel_size=1, strides=2)
         residual_x = conv2d_bn(x, filters, kernel_size=1, strides=2,name=name + '_Conv2D_BN_DS')
