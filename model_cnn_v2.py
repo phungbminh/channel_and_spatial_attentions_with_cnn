@@ -125,23 +125,33 @@ def ResNet(model_name="ResNet50", input_shape=(48, 48, 3), a_output='softmax', p
 def ResNet18(classes, input_shape, weight_decay=1e-4, attention=None):
     input = Input(shape=input_shape)
     x = input
+    print('Conv1:')
     # x = conv2d_bn_relu(x, filters=64, kernel_size=(7, 7), weight_decay=weight_decay, strides=(2, 2))
     # x = MaxPool2D(pool_size=(3, 3), strides=(2, 2),  padding='same')(x)
     x = conv2d_bn_relu(x, filters=64, kernel_size=(3, 3), weight_decay=weight_decay, strides=(1, 1))
     # # conv 2
+    print('Conv2:')
     x = ResidualBlock(x, filters=64, kernel_size=(3, 3), weight_decay=weight_decay, downsample=False, attention=attention, name='Block2.1')
     x = ResidualBlock(x, filters=64, kernel_size=(3, 3), weight_decay=weight_decay, downsample=False, attention=attention, name='Block2.2')
     # # conv 3
+    print('Conv3:')
     x = ResidualBlock(x, filters=128, kernel_size=(3, 3), weight_decay=weight_decay, downsample=True, attention=attention, name='Block3.1')
     x = ResidualBlock(x, filters=128, kernel_size=(3, 3), weight_decay=weight_decay, downsample=False, attention=attention, name='Block3.2')
     # # conv 4
+    print('Conv4:')
     x = ResidualBlock(x, filters=256, kernel_size=(3, 3), weight_decay=weight_decay, downsample=True, attention=attention,name='Block4.1')
     x = ResidualBlock(x, filters=256, kernel_size=(3, 3), weight_decay=weight_decay, downsample=False, attention=attention, name='Block4.2')
     # # conv 5
+    print('Conv5:')
     x = ResidualBlock(x, filters=512, kernel_size=(3, 3), weight_decay=weight_decay, downsample=True, attention=attention, name='Block5.1')
     x = ResidualBlock(x, filters=512, kernel_size=(3, 3), weight_decay=weight_decay, downsample=False, attention=attention, name='Block5.2')
     x = AveragePooling2D(pool_size=(4, 4), padding='valid')(x)
-    x = Flatten()(x)
+    #x = Flatten()(x)
+    x = GlobalAveragePooling2D(name="Final_AveragePooling")(x)
     x = Dense(classes, activation='softmax')(x)
-    model = Model(input, x, name='ResNet18')
+    if attention == "":
+        model_name = 'ResNet18'
+    else:
+        model_name = 'ResNet18' + "_" + attention
+    model = Model(inputs=input, outputs=x, name=model_name)
     return model
