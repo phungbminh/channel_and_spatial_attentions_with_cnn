@@ -97,7 +97,7 @@ def conv2d_bn_relu(x, filters, kernel_size, weight_decay=.0, strides=(1, 1)):
     return layer
 
 
-def ResidualBlock(x, filters, kernel_size, weight_decay, downsample=True,attention=None):
+def ResidualBlock(x, filters, kernel_size, weight_decay, downsample=True, attention=None, name=None):
     if downsample:
         # residual_x = conv2d_bn_relu(x, filters, kernel_size=1, strides=2)
         residual_x = conv2d_bn(x, filters, kernel_size=1, strides=2)
@@ -121,7 +121,7 @@ def ResidualBlock(x, filters, kernel_size, weight_decay, downsample=True,attenti
     if attention == "":
         residual = residual
     else:
-        residual = select_attention(residual , filter_num=filters, attention_type=attention, layer_name='Attention_{}'.format(attention))
+        residual = select_attention(residual, filter_num=filters, attention_type=attention, layer_name='{}_Attention_{}'.format(attention, name))
     out = layers.add([residual_x, residual])
 
     out = Activation('relu')(out)
