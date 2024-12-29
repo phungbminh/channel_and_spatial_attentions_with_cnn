@@ -79,28 +79,30 @@ def stage(x, filters, blocks, attention, stride1=2, name=None):
     return x
 
 
-def conv2d_bn(x, filters, kernel_size, weight_decay=.0, strides=(1, 1)):
+def conv2d_bn(x, filters, kernel_size, weight_decay=.0, strides=(1, 1),name=None):
     layer = Conv2D(filters=filters,
                    kernel_size=kernel_size,
                    strides=strides,
                    padding='same',
                    use_bias=False,
-                   kernel_regularizer=l2(weight_decay)
+                   kernel_regularizer=l2(weight_decay),
+                   name=name+'_Conv2D_BN'
                    )(x)
     layer = BatchNormalization()(layer)
     return layer
 
 
-def conv2d_bn_relu(x, filters, kernel_size, weight_decay=.0, strides=(1, 1)):
-    layer = conv2d_bn(x, filters, kernel_size, weight_decay, strides)
-    layer = Activation('relu')(layer)
+def conv2d_bn_relu(x, filters, kernel_size, weight_decay=.0, strides=(1, 1), name=None):
+    layer = conv2d_bn(x, filters, kernel_size, weight_decay, strides, name)
+    layer = Activation('relu', name=name + '_Relu')(layer)
     return layer
 
 
 def ResidualBlock(x, filters, kernel_size, weight_decay, downsample=True, attention=None, name=None):
     if downsample:
         # residual_x = conv2d_bn_relu(x, filters, kernel_size=1, strides=2)
-        residual_x = conv2d_bn(x, filters, kernel_size=1, strides=2)
+        residual_x = conv2d_bn(x, filters, kernel_size=1, strides=2,name=name + '_Conv2D_BN_DS')
+        stride = 2
         stride = 2
     else:
         residual_x = x
@@ -110,12 +112,14 @@ def ResidualBlock(x, filters, kernel_size, weight_decay, downsample=True, attent
                               kernel_size=kernel_size,
                               weight_decay=weight_decay,
                               strides=stride,
+                              name=name + '_1_Conv2D_RElu'
                               )
     residual = conv2d_bn(residual,
                          filters=filters,
                          kernel_size=kernel_size,
                          weight_decay=weight_decay,
                          strides=1,
+                         name=name + '_2_Conv2D_BN'
                          )
 
     if attention == "":
