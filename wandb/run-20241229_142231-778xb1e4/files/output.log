@@ -1,0 +1,30 @@
+/kaggle/input/rafdb-basic/rafdb_basic/train
+/kaggle/input/rafdb-basic/rafdb_basic/test
+224
+Found 12271 images belonging to 7 classes.
+Found 3068 images belonging to 7 classes.
+[1mModel: "model"[0m
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━┓
+┃[1m [0m[1mLayer (type)                        [0m[1m [0m┃[1m [0m[1mOutput Shape               [0m[1m [0m┃[1m [0m[1m        Param #[0m[1m [0m┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━┩
+└──────────────────────────────────────┴─────────────────────────────┴─────────────────┘
+[1m Total params: [0m[32m0[0m (0.00 B)
+[1m Trainable params: [0m[32m0[0m (0.00 B)
+[1m Non-trainable params: [0m[32m0[0m (0.00 B)
+Epoch 1/120
+Traceback (most recent call last):
+  File "/kaggle/working/channel_and_spatial_attentions_with_cnn/train.py", line 202, in <module>
+    main()
+  File "/kaggle/working/channel_and_spatial_attentions_with_cnn/train.py", line 182, in main
+    history = model.fit(
+  File "/usr/local/lib/python3.10/dist-packages/keras/src/utils/traceback_utils.py", line 122, in error_handler
+    raise e.with_traceback(filtered_tb) from None
+  File "/usr/local/lib/python3.10/dist-packages/keras/src/models/model.py", line 159, in call
+    raise NotImplementedError(
+NotImplementedError: Exception encountered when calling Model.call().
+
+[1mModel Model does not have a `call()` method implemented.[0m
+
+Arguments received by Model.call():
+  • args=('tf.Tensor(shape=(None, 224, 224, 3), dtype=float32)',)
+  • kwargs=<class 'inspect._empty'>
