@@ -1,0 +1,17 @@
+{"time":"2024-12-29T06:12:28.196380315Z","level":"INFO","msg":"using version","core version":"0.19.1"}
+{"time":"2024-12-29T06:12:28.196398933Z","level":"INFO","msg":"created symlink","path":"/kaggle/working/channel_and_spatial_attentions_with_cnn/wandb/run-20241229_061228-3svklnxs/logs/debug-core.log"}
+{"time":"2024-12-29T06:12:28.302900891Z","level":"INFO","msg":"created new stream","id":"3svklnxs"}
+{"time":"2024-12-29T06:12:28.30294031Z","level":"INFO","msg":"stream: started","id":"3svklnxs"}
+{"time":"2024-12-29T06:12:28.303106736Z","level":"INFO","msg":"handler: started","stream_id":"3svklnxs"}
+{"time":"2024-12-29T06:12:28.30389512Z","level":"INFO","msg":"sender: started","stream_id":"3svklnxs"}
+{"time":"2024-12-29T06:12:28.303885969Z","level":"INFO","msg":"writer: Do: started","stream_id":"3svklnxs"}
+{"time":"2024-12-29T06:12:28.553488291Z","level":"INFO","msg":"Starting system monitor"}
+{"time":"2024-12-29T09:08:42.00720637Z","level":"INFO","msg":"Stopping system monitor"}
+{"time":"2024-12-29T09:08:42.008004975Z","level":"INFO","msg":"Stopped system monitor"}
+{"time":"2024-12-29T09:08:42.97440123Z","level":"INFO","msg":"handler: operation stats","stats":{"operations":[{"desc":"uploading output.log","runtime_seconds":0.511171326,"progress":"110.4KB/110.4KB"},{"desc":"uploading config.yaml","runtime_seconds":0.511155497,"progress":"2.0KB/2.0KB"}],"total_operations":2}}
+{"time":"2024-12-29T09:08:43.256416417Z","level":"INFO","msg":"fileTransfer: Close: file transfer manager closed"}
+{"time":"2024-12-29T09:08:44.454033742Z","level":"INFO","msg":"stream: closing","id":"3svklnxs"}
+{"time":"2024-12-29T09:08:44.454072498Z","level":"INFO","msg":"handler: closed","stream_id":"3svklnxs"}
+{"time":"2024-12-29T09:08:44.454089191Z","level":"INFO","msg":"writer: Close: closed","stream_id":"3svklnxs"}
+{"time":"2024-12-29T09:08:44.454105126Z","level":"INFO","msg":"sender: closed","stream_id":"3svklnxs"}
+{"time":"2024-12-29T09:08:44.454179737Z","level":"INFO","msg":"stream: closed","id":"3svklnxs"}
