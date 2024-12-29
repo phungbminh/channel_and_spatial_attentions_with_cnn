@@ -1,5 +1,5 @@
 from tensorflow.keras import layers
-from tensorflow.keras.layers import Input, Conv2D, MaxPool2D, Flatten, Dense, BatchNormalization, Activation
+from tensorflow.keras.layers import Input, Conv2D, MaxPool2D, Flatten, Dense, BatchNormalization, Activation,AveragePooling2D
 from attention_modules_v2 import *
 from attentions_module import bam_block, scse_block, cbam_block
 from tensorflow.keras.layers import Conv2D, Add,MaxPool2D
@@ -76,6 +76,57 @@ def stage(x, filters, blocks, attention, stride1=2, name=None):
     for i in range(2, blocks + 1):
         x = residual_block(x, filters, conv_shortcut=False, name=name + '_Block' + str(i), attention=attention)
     return x
+
+
+def conv2d_bn(x, filters, kernel_size, weight_decay=.0, strides=(1, 1)):
+    layer = Conv2D(filters=filters,
+                   kernel_size=kernel_size,
+                   strides=strides,
+                   padding='same',
+                   use_bias=False,
+                   kernel_regularizer=l2(weight_decay)
+                   )(x)
+    layer = BatchNormalization()(layer)
+    return layer
+
+
+def conv2d_bn_relu(x, filters, kernel_size, weight_decay=.0, strides=(1, 1)):
+    layer = conv2d_bn(x, filters, kernel_size, weight_decay, strides)
+    layer = Activation('relu')(layer)
+    return layer
+
+
+def ResidualBlock(x, filters, kernel_size, weight_decay, downsample=True,attention=None):
+    if downsample:
+        # residual_x = conv2d_bn_relu(x, filters, kernel_size=1, strides=2)
+        residual_x = conv2d_bn(x, filters, kernel_size=1, strides=2)
+        stride = 2
+    else:
+        residual_x = x
+        stride = 1
+    residual = conv2d_bn_relu(x,
+                              filters=filters,
+                              kernel_size=kernel_size,
+                              weight_decay=weight_decay,
+                              strides=stride,
+                              )
+    residual = conv2d_bn(residual,
+                         filters=filters,
+                         kernel_size=kernel_size,
+                         weight_decay=weight_decay,
+                         strides=1,
+                         )
+
+    if attention == "":
+        residual = residual
+    else:
+        residual = select_attention(residual , filter_num=filters, attention_type=attention, layer_name='Attention_{}'.format(attention))
+    out = layers.add([residual_x, residual])
+
+    out = Activation('relu')(out)
+    return out
+
+
 
 def vgg_conv_block(input, block_idx, filter, attention_type, activation='elu'):
     print('Conv: ' + str(block_idx) + ' filter: ' + str(filter))

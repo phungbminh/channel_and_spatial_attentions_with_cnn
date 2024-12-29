@@ -4,8 +4,8 @@ import tensorflow as tf
 from layers_v2 import *
 from attention_modules_v2 import *
 from tensorflow.keras.layers import (Dropout, Activation, ZeroPadding2D, Input, Conv2D, MaxPool2D, Flatten, Dense,
-                                     MaxPooling2D, BatchNormalization, ReLU, GlobalAveragePooling2D)
-
+                                     MaxPooling2D, BatchNormalization, ReLU, GlobalAveragePooling2D, AveragePooling2D)
+from keras.regularizers import l2
 
 def gpu_check():
     print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
@@ -91,9 +91,9 @@ def ResNet(model_name="ResNet50", input_shape=(48, 48, 3), a_output='softmax', p
     x = layers.Conv2D(64, 7, strides=2, name='Conv1')(x)
     x = layers.BatchNormalization(axis=batch_axis, epsilon=1.001e-5, name='Conv1_BN')(x)
     x = layers.Activation('relu', name='Conv1_relu')(x)
-
-    x = layers.ZeroPadding2D(padding=((1, 1), (1, 1)), name='MaxPool2D_1_Pad')(x)
-    x = layers.MaxPooling2D(3, strides=2, name='MaxPool2D_1')(x)
+    #
+    # x = layers.ZeroPadding2D(padding=((1, 1), (1, 1)), name='MaxPool2D_1_Pad')(x)
+    # x = layers.MaxPooling2D(3, strides=2, name='MaxPool2D_1')(x)
 
     # Residual Stage
     print('Stage 1: Conv2_x{}'.format(num_blocks[0]))
@@ -118,4 +118,30 @@ def ResNet(model_name="ResNet50", input_shape=(48, 48, 3), a_output='softmax', p
     else:
         model_name = model_name + "_" + attention
     model = Model(inputs=input, outputs=output, name=model_name)
+    return model
+
+
+def ResNet18(classes, input_shape, weight_decay=1e-4, attention=None):
+    input = Input(shape=input_shape)
+    x = input
+    # x = conv2d_bn_relu(x, filters=64, kernel_size=(7, 7), weight_decay=weight_decay, strides=(2, 2))
+    # x = MaxPool2D(pool_size=(3, 3), strides=(2, 2),  padding='same')(x)
+    x = conv2d_bn_relu(x, filters=64, kernel_size=(3, 3), weight_decay=weight_decay, strides=(1, 1))
+
+    # # conv 2
+    x = ResidualBlock(x, filters=64, kernel_size=(3, 3), weight_decay=weight_decay, downsample=False, attention=attention)
+    x = ResidualBlock(x, filters=64, kernel_size=(3, 3), weight_decay=weight_decay, downsample=False, attention=attention)
+    # # conv 3
+    x = ResidualBlock(x, filters=128, kernel_size=(3, 3), weight_decay=weight_decay, downsample=True, attention=attention)
+    x = ResidualBlock(x, filters=128, kernel_size=(3, 3), weight_decay=weight_decay, downsample=False, attention=attention)
+    # # conv 4
+    x = ResidualBlock(x, filters=256, kernel_size=(3, 3), weight_decay=weight_decay, downsample=True, attention=attention)
+    x = ResidualBlock(x, filters=256, kernel_size=(3, 3), weight_decay=weight_decay, downsample=False, attention=attention)
+    # # conv 5
+    x = ResidualBlock(x, filters=512, kernel_size=(3, 3), weight_decay=weight_decay, downsample=True, attention=attention)
+    x = ResidualBlock(x, filters=512, kernel_size=(3, 3), weight_decay=weight_decay, downsample=False, attention=attention)
+    x = AveragePooling2D(pool_size=(4, 4), padding='valid')(x)
+    x = Flatten()(x)
+    x = Dense(classes, activation='softmax')(x)
+    model = Model(input, x, name='ResNet18')
     return model
