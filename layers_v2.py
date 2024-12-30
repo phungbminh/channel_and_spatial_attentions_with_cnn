@@ -46,9 +46,9 @@ def residual_block(x, filters, kernel_size=3, stride=1, conv_shortcut=True, name
     x = layers.BatchNormalization(axis=batch_axis, epsilon=1.001e-5, name=name + '_1_BN')(x)
     x = layers.Activation('elu', name=name + '_1_elu')(x)
     # conv 3x3
-    x = layers.Conv2D(filters2, kernel_size, padding='SAME', name=name + '_2_Conv')(x)
-    x = layers.BatchNormalization(axis=batch_axis, epsilon=1.001e-5, name=name + '_2_BN')(x)
-    x = layers.Activation('elu', name=name + '_2_elu')(x)
+    # x = layers.Conv2D(filters2, kernel_size, padding='SAME', name=name + '_2_Conv')(x)
+    # x = layers.BatchNormalization(axis=batch_axis, epsilon=1.001e-5, name=name + '_2_BN')(x)
+    # x = layers.Activation('elu', name=name + '_2_elu')(x)
     # conv 1x1
     x = layers.Conv2D(filters3, 1, name=name + '_3_Conv')(x)
     x = layers.BatchNormalization(axis=batch_axis, epsilon=1.001e-5, name=name + '_3_BN')(x)
