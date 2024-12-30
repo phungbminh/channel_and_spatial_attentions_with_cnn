@@ -99,13 +99,13 @@ def ResNet(model_name="ResNet50", input_shape=(48, 48, 3), a_output='softmax', p
 
     # Residual Stage
     print('Stage 1: Conv2_x{}'.format(num_blocks[0]))
-    x = stage(x, [64, 64, 64], num_blocks[0], stride1=1, name='Conv2_x{}'.format(num_blocks[0]), attention=attention)
+    x = stage(x, [64, 64, 256], num_blocks[0], stride1=1, name='Conv2_x{}'.format(num_blocks[0]), attention=attention)
     print('Stage 2: Conv3_x{}'.format(num_blocks[1]))
-    x = stage(x, [128, 128, 128], num_blocks[1], name='Conv3_x{}'.format(num_blocks[1]), attention=attention)
+    x = stage(x, [128, 128, 512], num_blocks[1], name='Conv3_x{}'.format(num_blocks[1]), attention=attention)
     print('Stage 3: Conv4_x{}'.format(num_blocks[2]))
-    x = stage(x, [256, 256, 256], num_blocks[2], name='Conv4_x{}'.format(num_blocks[2]), attention=attention)
+    x = stage(x, [256, 256, 1024], num_blocks[2], name='Conv4_x{}'.format(num_blocks[2]), attention=attention)
     print('Stage 4: Conv5_x{}'.format(num_blocks[3]))
-    x = stage(x, [512, 512, 512], num_blocks[3], name='Conv5_x{}'.format(num_blocks[2]), attention=None)
+    x = stage(x, [512, 512, 2048], num_blocks[3], name='Conv5_x{}'.format(num_blocks[2]), attention=None)
 
     # Output
     if pooling == 'avg':
@@ -123,7 +123,7 @@ def ResNet(model_name="ResNet50", input_shape=(48, 48, 3), a_output='softmax', p
     return model
 
 
-def ResNet18(classes, input_shape, weight_decay=1e-4, attention=None):
+def ResNetCIFA(classes, input_shape, weight_decay=1e-4, attention=None):
     input = Input(shape=input_shape)
     x = input
     print('Conv1:')

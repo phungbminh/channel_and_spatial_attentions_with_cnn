@@ -12,7 +12,7 @@ from wandb.integration.keras import WandbMetricsLogger
 import os, sys, argparse, pytz, json
 from datetime import datetime
 from model_cnn import resnet50,vgg16, resnet18
-from model_cnn_v2 import ResNet, VGG16, ResNet18
+from model_cnn_v2 import ResNet, VGG16, ResNetCIFA
 from tensorflow.keras import layers, Model
 
 
@@ -108,7 +108,11 @@ def main():
     if args.model == 'resnet18':
         # model = resnet18(input_shape=(args.image_size, args.image_size, args.image_channels), num_classes=classes,
         #               attention_type=args.attention_option)
-        model = ResNet(model_name="ResNet18", input_shape=(args.image_size, args.image_size, args.image_channels),
+        if args.image_size == 32:
+            weight_decay = 1e-4
+            model = ResNetCIFA(input_shape=(args.image_size, args.image_size, args.image_channels), classes=classes, weight_decay=weight_decay, attention=args.attention_option)
+        else:
+            model = ResNet(model_name="ResNet18", input_shape=(args.image_size, args.image_size, args.image_channels),
                        attention=args.attention_option,  pooling="avg")
 
         # weight_decay = 1e-4
