@@ -127,12 +127,9 @@ def ResNetCIFA(classes, input_shape, weight_decay=1e-4, attention=None):
     input = Input(shape=input_shape)
     x = input
     print('Conv1:')
-    # x = conv2d_bn_relu(x, filters=64, kernel_size=(7, 7), weight_decay=weight_decay, strides=(2, 2))
-    # x = MaxPool2D(pool_size=(3, 3), strides=(2, 2),  padding='same')(x)
-    x = layers.ZeroPadding2D(padding=((3, 3), (3, 3)), name='Conv1_Pad')(input)
-    x = layers.Conv2D(64, 7, strides=2, name='Conv1')(x)
-    x = layers.BatchNormalization(axis=1, epsilon=1.001e-5, name='Conv1_BN')(x)
-    x = layers.Activation('relu', name='Conv1_relu')(x)
+    x = conv2d_bn_relu(x, filters=64, kernel_size=(7, 7), weight_decay=weight_decay, strides=(2, 2))
+    x = MaxPool2D(pool_size=(3, 3), strides=(2, 2),  padding='same')(x)
+
     if attention is not None:
         model_name = 'ResNet18' + "_" + attention
     else:
@@ -147,8 +144,8 @@ def ResNetCIFA(classes, input_shape, weight_decay=1e-4, attention=None):
     x = ResidualBlock(x, filters=128, kernel_size=(3, 3), weight_decay=weight_decay, downsample=False, attention=attention, name='Block3.2')
     # # conv 4
     print('Stage 3:')
-    x = ResidualBlock(x, filters=256, kernel_size=(3, 3), weight_decay=weight_decay, downsample=True, attention=None,name='Block4.1')
-    x = ResidualBlock(x, filters=256, kernel_size=(3, 3), weight_decay=weight_decay, downsample=False, attention=None, name='Block4.2')
+    x = ResidualBlock(x, filters=256, kernel_size=(3, 3), weight_decay=weight_decay, downsample=True, attention=attention,name='Block4.1')
+    x = ResidualBlock(x, filters=256, kernel_size=(3, 3), weight_decay=weight_decay, downsample=False, attention=attention, name='Block4.2')
     # # conv 5
     print('Stage 4:')
     x = ResidualBlock(x, filters=512, kernel_size=(3, 3), weight_decay=weight_decay, downsample=True, attention=None, name='Block5.1')
