@@ -136,7 +136,7 @@ class ResultAnalyzer:
                         'Attention': attention,
                         'Mean Diff (%)': f"{(attention_data.mean() - baseline_data.mean())*100:.2f}",
                         'p-value': f"{p_value:.4f}",
-                        'Cohen\\'s d': f"{cohens_d:.3f}",
+                        "Cohen's d": f"{cohens_d:.3f}",
                         'Significance': '***' if p_value < 0.001 else '**' if p_value < 0.01 else '*' if p_value < 0.05 else 'ns'
                     })
         

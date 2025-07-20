@@ -135,7 +135,8 @@ class ComprehensiveMetricsTracker(Callback):
         val_loss = logs.get('val_loss', float('inf'))
         val_f1 = val_metrics['f1']
         
-        if val_acc > self.best_metrics['best_val_accuracy']:\n            self.best_metrics['best_val_accuracy'] = val_acc
+        if val_acc > self.best_metrics['best_val_accuracy']:
+            self.best_metrics['best_val_accuracy'] = val_acc
             self.best_metrics['best_val_loss'] = val_loss
             self.best_metrics['best_val_f1'] = val_f1
             self.best_metrics['best_epoch'] = epoch + 1
