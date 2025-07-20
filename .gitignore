@@ -161,4 +161,3 @@ results/wandb/
 # Data (uncomment if you don't want to track datasets)
 # data/
 /scripts/
-/data/
