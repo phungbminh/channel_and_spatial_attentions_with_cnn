@@ -15,7 +15,7 @@ from typing import Dict, List, Optional, Tuple, Any
 from pathlib import Path
 from dataclasses import dataclass, asdict
 
-from config import Config, ModelConfig, TrainingConfig, ExperimentConfig
+from ..config.config import Config, ModelConfig, TrainingConfig, ExperimentConfig
 
 logger = logging.getLogger(__name__)
 
