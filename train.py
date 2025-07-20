@@ -1,206 +1,273 @@
-import tensorflow as tf
-from tensorflow.keras.losses import SparseCategoricalCrossentropy, BinaryCrossentropy
-from tensorflow.keras.optimizers import Adam, SGD, RMSprop, Adadelta, Adamax
-from tensorflow.keras.preprocessing.image import ImageDataGenerator
-from tensorflow.keras.callbacks import ModelCheckpoint, CSVLogger, BackupAndRestore, LambdaCallback
-import keras
-import argparse
-import pickle
-import wandb
-from wandb.integration.keras import WandbMetricsLogger
+#!/usr/bin/env python3
+"""
+Modular training script for CNN models with attention mechanisms.
+Research-grade implementation with comprehensive experiment management.
 
-import os, sys, argparse, pytz, json
-from datetime import datetime
-from model_cnn import resnet50,vgg16, resnet18
-from model_cnn_v2 import ResNet, VGG16, ResNetCIFA
-from tensorflow.keras import layers, Model
+Usage:
+    Single experiment:   python train.py --model resnet18 --attention-type CBAM
+    Batch experiments:   python train.py --experiment-mode batch
+    Statistical tests:   python train.py --experiment-mode statistical
+"""
 
+import os
+import sys
+import logging
+from typing import Dict, Any, Optional
 
-
-def main():
-    root_dir = "kaggle/working"
-
-    current_time = datetime.now()
-
-    # Convert to Vietnam time zone
-    vietnam_timezone = pytz.timezone('Asia/Ho_Chi_Minh')
-    current_time_vietnam = current_time.astimezone(vietnam_timezone)
-
-    # Format the datetime object to exclude milliseconds
-    current_time = str(current_time_vietnam.strftime('%Y-%m-%d %H:%M:%S'))
-
-    current_time = current_time.replace(" ", "_")
-    current_time = current_time.replace("-", "_")
-    current_time = current_time.replace(":", "_")
-    current_time = current_time.replace("+", "_")
-
-    parser = argparse.ArgumentParser()
-
-    # Arguments users used when running command lines
-    parser.add_argument('--result-path', type=str, default="./working", metavar='RESULT_DIR', help='')
-    parser.add_argument('--train-folder', default='/kaggle/input/fer2013/train', type=str,  help='Where training data is located')
-    parser.add_argument('--valid-folder', default='/kaggle/input/fer2013/test', type=str,  help='Where validation data is located')
-    parser.add_argument('--model', default='vgg16', type=str, help='Type of model')
-    parser.add_argument('--num-classes', default=7, type=int, help='Number of classes')
-    parser.add_argument("--batch-size", default=32, type=int)
-    parser.add_argument('--image-size', default=48, type=int, help='Size of input image')
-    parser.add_argument('--optimizer', default='adamax', type=str, help='Types of optimizers')
-    parser.add_argument('--lr-scheduler', default='ExponentialDecay', type=str, help='Types of scheduler')
-    parser.add_argument('--lr', default=0.0001, type=float, help='Learning rate')
-    parser.add_argument('--epochs', default=120, type=int, help='Number of epochs')
-    parser.add_argument('--image-channels', default=1, type=int, help='Number channel of input image')
-    parser.add_argument('--class-mode', default='sparse', type=str, help='Class mode to compile')
-    parser.add_argument('--model-path', default=current_time + '.h5.keras', type=str, help='Path to save trained model')
-    parser.add_argument('--class-names-path', default='class_names.pkl', type=str, help='Path to save class names')
-    parser.add_argument('--early-stopping', default=50, type=str, help='early stopping for avoiding overfit')
-    parser.add_argument('--d-steps', default=32, type=int, help='step per epochs')
-    parser.add_argument('--use-wandb', default=1, type=int, help='Use wandb')
-    parser.add_argument('--wandb-api-key', default='cfa48af5b389548142fc1fcc1ab79cbcfe7fc07b', type=str, help='wantdb api key')
-    parser.add_argument('--wandb-project-name', default='Resnet50_BAM_v2', type=str,help='name project to store data in wantdb')
-    parser.add_argument('--wandb-runer', default='', type=str, help='')
-    parser.add_argument('--attention_option', default='None', type=str, help='CBAM, BAM, scSE')
-    parser.add_argument('--color-mode', default='grayscale', type=str, help='Color mode')
+from src.config.config import Config, ConfigManager
+from src.training.trainer import Trainer, run_single_experiment
+from src.experiments.experiment_manager import ExperimentManager
 
 
-    # args, unknown = parser.parse_known_args()
-
-    args = parser.parse_args()
-    print(args)
-    experiments_dir = args.result_path + '/' + current_time
-    if args.use_wandb == 1:
-        wandb.login(key=args.wandb_api_key)
-        # Initialize WandB with the configuration from the parsed arguments
-        wandb.init(project=args.wandb_project_name,  name=args.wandb_runer, config=vars(args))
-
-    # chuan bi dataset de training
-    TRAINING_DIR = args.train_folder
-    TEST_DIR = args.valid_folder
-    print(TRAINING_DIR)
-    print(TEST_DIR)
-
-    loss = SparseCategoricalCrossentropy()
-    class_mode = args.class_mode
-    classes = args.num_classes
-
-    training_datagen = ImageDataGenerator(
-        rescale=1. / 255,
-        rotation_range=20,
-        width_shift_range=0.2,
-        height_shift_range=0.2,
-        shear_range=0.2,
-        zoom_range=0.2)
-    val_datagen = ImageDataGenerator(rescale=1. / 255)
-
-    img_size = args.image_size
-    print(img_size)
-    train_generator = training_datagen.flow_from_directory(TRAINING_DIR, target_size=(img_size, img_size), batch_size=args.batch_size, class_mode=class_mode, color_mode=args.color_mode)
-    val_generator = val_datagen.flow_from_directory(TEST_DIR, target_size=(img_size, img_size), batch_size=args.batch_size, class_mode=class_mode,color_mode=args.color_mode)
-    # Luu Tru lai chi muc nhan
-    class_names = list(train_generator.class_indices.keys())
-    with open(args.class_names_path, 'wb') as fp:
-        pickle.dump(class_names, fp)
-
-    model = Model()
-    if args.model == 'resnet50':
-        model = resnet50(input_shape=(args.image_size, args.image_size, args.image_channels), num_classes=classes,
-                        attention_type=args.attention_option)
-
-    if args.model == 'resnet18':
-        # model = resnet18(input_shape=(args.image_size, args.image_size, args.image_channels), num_classes=classes,
-        #               attention_type=args.attention_option)
-        if args.image_size == 32:
-            weight_decay = 1e-4
-            model = ResNetCIFA(input_shape=(args.image_size, args.image_size, args.image_channels), classes=classes, weight_decay=weight_decay, attention=args.attention_option)
-        else:
-            model = ResNet(model_name="ResNet18", input_shape=(args.image_size, args.image_size, args.image_channels),
-                       attention=args.attention_option,  pooling="avg")
-
-        # weight_decay = 1e-4
-        # model = ResNet18(input_shape=(args.image_size, args.image_size, args.image_channels), classes=classes, weight_decay=weight_decay, attention=args.attention_option)
-    if args.model == 'vgg16':
-        model = VGG16(input_shape=(args.image_size, args.image_size, args.image_channels), num_classes=classes,
-                      attention_type=args.attention_option)
-    model.build(input_shape=(None, args.image_size, args.image_size, args.image_channels))
-    model.summary()
-
-    # chon learning rate scheduler
-    lr_schedule = args.lr
-    if args.lr_scheduler == 'ExponentialDecay':
-        lr_schedule = tf.keras.optimizers.schedules.ExponentialDecay(
-            initial_learning_rate=args.lr,
-            decay_steps=10000,
-            decay_rate=0.9)
-    elif args.lr_scheduler == 'CosineDecay':
-        lr_schedule = tf.keras.optimizers.schedules.CosineDecay(
-            initial_learning_rate=args.lr,
-            decay_steps=5,
-            alpha=0.0,
-            name="CosineDecay",
-            warmup_target=None,
-            warmup_steps=0)
-
-    # chon bo toi uu optimizer
-    if (args.optimizer == 'adam'):
-        optimizer = Adam(learning_rate=lr_schedule)
-    elif (args.optimizer == 'sgd'):
-        optimizer = SGD(learning_rate=lr_schedule)
-    elif (args.optimizer == 'rmsprop'):
-        optimizer = RMSprop(learning_rate=lr_schedule)
-    elif (args.optimizer == 'adadelta'):
-        optimizer = Adadelta(learning_rate=lr_schedule)
-    elif (args.optimizer == 'adamax'):
-        optimizer = Adamax(learning_rate=lr_schedule)
-    else:
-        raise 'Invalid optimizer. Valid option: adam, sgd, rmsprop, adadelta, adamax'
-
-    callbacks = []
-    # wandb
-    if args.use_wandb == 1:
-        cb_wandb = WandbMetricsLogger(log_freq=1)
-        callbacks.append(cb_wandb)
-
-    # logger
-    log_path = experiments_dir
-    if not os.path.exists(log_path):
-        os.makedirs(log_path)
-    cb_log = CSVLogger(log_path + '/log.csv')
-    callbacks.append(cb_log)
-
-    # early stopping
-    callbacks.append(tf.keras.callbacks.EarlyStopping(monitor='loss', patience=args.early_stopping))
-
-    # Thiet lap ham loss
-    model.compile(optimizer=optimizer,
-                  loss=SparseCategoricalCrossentropy(),
-                  metrics=['accuracy'])
-
-    # Luu lai he so weight
-    best_model = ModelCheckpoint(args.wandb_project_name + '_' + args.model_path,
-                                 save_weights_only=False,
-                                 monitor='val_accuracy',
-                                 verbose=1,
-                                 mode='max',
-                                 save_best_only=True)
-    callbacks.append(best_model)
-
-    history = model.fit(
-        train_generator,
-        epochs=args.epochs,
-        verbose=1,
-        validation_data=val_generator,
-        callbacks=callbacks,
+def setup_logging(level: int = logging.INFO) -> None:
+    """Setup basic logging configuration."""
+    logging.basicConfig(
+        level=level,
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        handlers=[
+            logging.StreamHandler(sys.stdout)
+        ]
     )
 
-    best_val_accuracy = max(history.history['val_accuracy'])
-    best_val_loss = min(history.history['val_loss'])
 
-    print(f"Best Validation Accuracy: {best_val_accuracy:.4f}")
-    print(f"Best Validation Loss: {best_val_loss:.4f}")
-    # 🐝 Close your wandb run
-    if args.use_wandb == 1:
-        wandb.finish()
+def print_banner() -> None:
+    """Print application banner."""
+    print("=" * 80)
+    print("🔬 CNN ATTENTION MECHANISMS RESEARCH FRAMEWORK")
+    print("=" * 80)
+    print("📊 Models: ResNet50, ResNet18, VGG16")
+    print("🎯 Attention: CBAM, BAM, scSE")
+    print("🧪 Experiment Modes: Single, Batch, Statistical")
+    print("=" * 80)
 
+
+def run_single_mode(config: Config) -> Dict[str, Any]:
+    """
+    Run single experiment mode.
+    
+    Args:
+        config: Experiment configuration
+        
+    Returns:
+        Dictionary with experiment results
+    """
+    logger = logging.getLogger(__name__)
+    logger.info("🚀 Running single experiment mode")
+    
+    try:
+        results = run_single_experiment(config)
+        
+        if results.get('training_completed', False):
+            logger.info("✅ Single experiment completed successfully")
+            logger.info(f"📊 Best validation accuracy: {results.get('best_val_accuracy', 'N/A'):.4f}")
+        else:
+            logger.error("❌ Single experiment failed")
+            logger.error(f"Error: {results.get('error', 'Unknown error')}")
+        
+        return results
+        
+    except Exception as e:
+        logger.error(f"💥 Single experiment crashed: {str(e)}")
+        return {'training_completed': False, 'error': str(e)}
+
+
+def run_batch_mode(config: Config) -> None:
+    """
+    Run batch experiment mode.
+    
+    Args:
+        config: Base configuration for batch experiments
+    """
+    logger = logging.getLogger(__name__)
+    logger.info("🚀 Running batch experiment mode")
+    
+    try:
+        # Create experiment manager
+        manager = ExperimentManager(config.experiment.batch_results_dir)
+        
+        # Run batch experiments
+        batch = manager.run_experiment_batch(config)
+        
+        # Get summary
+        summary = batch.get_summary()
+        
+        logger.info("✅ Batch experiments completed")
+        logger.info(f"📊 Success rate: {summary['success_count']}/{summary['total_experiments']}")
+        
+        if summary.get('best_accuracy'):
+            logger.info(f"🏆 Best accuracy: {summary['best_accuracy']:.4f}")
+            logger.info(f"🥇 Best experiment: {summary.get('best_experiment', 'N/A')}")
+        
+        logger.info(f"💾 Results saved to: {summary['batch_dir']}")
+        
+    except Exception as e:
+        logger.error(f"💥 Batch experiments failed: {str(e)}")
+        raise
+
+
+def run_statistical_mode(config: Config) -> None:
+    """
+    Run statistical significance experiment mode.
+    
+    Args:
+        config: Base configuration for statistical experiments
+    """
+    logger = logging.getLogger(__name__)
+    logger.info("🚀 Running statistical significance mode")
+    
+    try:
+        # Create experiment manager
+        manager = ExperimentManager(config.experiment.batch_results_dir)
+        
+        # Run statistical experiments
+        batch = manager.run_experiment_batch(config)
+        
+        # Get summary
+        summary = batch.get_summary()
+        
+        logger.info("✅ Statistical experiments completed")
+        logger.info(f"📊 Success rate: {summary['success_count']}/{summary['total_experiments']}")
+        logger.info(f"🔬 Statistical seeds tested: {len(config.experiment.statistical_seeds)}")
+        
+        if summary.get('best_accuracy'):
+            logger.info(f"🏆 Best accuracy: {summary['best_accuracy']:.4f}")
+        
+        logger.info(f"💾 Results saved to: {summary['batch_dir']}")
+        logger.info("📈 Run result_analyzer.py for statistical analysis")
+        
+    except Exception as e:
+        logger.error(f"💥 Statistical experiments failed: {str(e)}")
+        raise
+
+
+def validate_environment(config: Config) -> None:
+    """
+    Validate the execution environment.
+    
+    Args:
+        config: Configuration to validate
+        
+    Raises:
+        SystemExit: If validation fails
+    """
+    logger = logging.getLogger(__name__)
+    
+    try:
+        # Validate configuration
+        config.validate()
+        logger.info("✅ Configuration validated successfully")
+        
+        # Check required directories
+        os.makedirs(config.logging.result_path, exist_ok=True)
+        os.makedirs(config.experiment.batch_results_dir, exist_ok=True)
+        
+        # Check TensorFlow GPU availability
+        import tensorflow as tf
+        gpu_available = len(tf.config.list_physical_devices('GPU')) > 0
+        logger.info(f"🖥️  GPU Available: {gpu_available}")
+        
+        if gpu_available:
+            for gpu in tf.config.list_physical_devices('GPU'):
+                logger.info(f"   {gpu}")
+        
+        # Memory configuration for GPU
+        if gpu_available:
+            try:
+                gpus = tf.config.experimental.list_physical_devices('GPU')
+                for gpu in gpus:
+                    tf.config.experimental.set_memory_growth(gpu, True)
+                logger.info("🔧 GPU memory growth enabled")
+            except Exception as e:
+                logger.warning(f"Could not configure GPU memory: {str(e)}")
+        
+    except Exception as e:
+        logger.error(f"❌ Environment validation failed: {str(e)}")
+        sys.exit(1)
+
+
+def print_experiment_summary(config: Config) -> None:
+    """
+    Print experiment configuration summary.
+    
+    Args:
+        config: Experiment configuration
+    """
+    logger = logging.getLogger(__name__)
+    
+    logger.info("📋 Experiment Configuration:")
+    logger.info(f"   Mode: {config.experiment.experiment_mode}")
+    logger.info(f"   Model: {config.model.model}")
+    logger.info(f"   Attention: {config.model.attention_type}")
+    logger.info(f"   Image Size: {config.model.image_size}x{config.model.image_size}")
+    logger.info(f"   Epochs: {config.training.epochs}")
+    logger.info(f"   Batch Size: {config.training.batch_size}")
+    logger.info(f"   Learning Rate: {config.training.lr}")
+    logger.info(f"   Optimizer: {config.training.optimizer}")
+    logger.info(f"   Seed: {config.training.seed}")
+    
+    if config.experiment.experiment_mode in ['batch', 'statistical']:
+        logger.info(f"   Batch Results: {config.experiment.batch_results_dir}")
+    
+    if config.logging.use_wandb:
+        logger.info(f"   WandB Project: {config.logging.wandb_project_name}")
+
+
+def main() -> int:
+    """
+    Main entry point for the training script.
+    
+    Returns:
+        Exit code (0 for success, 1 for failure)
+    """
+    # Setup basic logging first
+    setup_logging()
+    logger = logging.getLogger(__name__)
+    
+    try:
+        # Print banner
+        print_banner()
+        
+        # Parse arguments and load configuration
+        parser = ConfigManager.create_argument_parser()
+        args = parser.parse_args()
+        config = ConfigManager.load_config(args)
+        
+        # Validate environment
+        validate_environment(config)
+        
+        # Print experiment summary
+        print_experiment_summary(config)
+        
+        # Route to appropriate experiment mode
+        if config.experiment.experiment_mode == 'single':
+            results = run_single_mode(config)
+            return 0 if results.get('training_completed', False) else 1
+            
+        elif config.experiment.experiment_mode == 'batch':
+            run_batch_mode(config)
+            return 0
+            
+        elif config.experiment.experiment_mode == 'statistical':
+            run_statistical_mode(config)
+            return 0
+            
+        else:
+            logger.error(f"❌ Unsupported experiment mode: {config.experiment.experiment_mode}")
+            return 1
+    
+    except KeyboardInterrupt:
+        logger.info("⏹️  Training interrupted by user")
+        return 1
+    
+    except Exception as e:
+        logger.error(f"💥 Unexpected error: {str(e)}")
+        logger.exception("Full traceback:")
+        return 1
+    
+    finally:
+        logger.info("🏁 Training script finished")
 
 
 if __name__ == "__main__":
-    main()
+    exit_code = main()
+    sys.exit(exit_code)
