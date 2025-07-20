@@ -14,13 +14,21 @@ from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 # Add src to path for imports
 sys.path.append('src')
+sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
 
 try:
-    from models.model_cnn import vgg16, resnet18
-    from models.model_cnn_v2 import VGG16, ResNet
+    from src.models.model_cnn import vgg16, resnet18
+    from src.models.model_cnn_v2 import VGG16, ResNet
 except ImportError:
-    print("❌ Error importing models. Make sure src/models/ exists and is accessible.")
-    sys.exit(1)
+    try:
+        # Alternative import path
+        from models.model_cnn import vgg16, resnet18  
+        from models.model_cnn_v2 import VGG16, ResNet
+    except ImportError:
+        print("❌ Error importing models. Make sure src/models/ exists and is accessible.")
+        print("📁 Current working directory:", os.getcwd())
+        print("📁 Python path:", sys.path[:3])
+        sys.exit(1)
 
 def create_data_generators(train_path, valid_path, image_size, batch_size, color_mode='rgb'):
     """Create data generators for training and validation"""
